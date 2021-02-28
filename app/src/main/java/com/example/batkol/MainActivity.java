@@ -1,5 +1,6 @@
 package com.example.batkol;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -12,11 +13,13 @@ import android.view.View;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     EditText ed_phoneInput;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +29,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         ed_phoneInput = (EditText)findViewById(R.id.editTextPhone);
+        button=(Button)findViewById(R.id.speech);
         Toast.makeText(this, ed_phoneInput.getText().toString().trim(), Toast.LENGTH_LONG).show();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),speechToText.class);
+                startActivity(i);
+            }
+        });
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
