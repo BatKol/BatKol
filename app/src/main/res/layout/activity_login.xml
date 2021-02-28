@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    tools:context=".LoginActivity">
+
+
+    <Button
+        android:id="@+id/Btn_sendCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="124dp"
+
+        android:text="Send Code"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:paddingStart="10dp"
+        android:id="@+id/phoneNumber_Input"
+        android:layout_width="198dp"
+        android:layout_height="42dp"
+        android:textColor="@color/white"
+
+        android:layout_marginStart="40dp"
+        android:ems="10"
+        android:textColorHint="@color/white"
+        android:hint="Enter Phone Number"
+        android:inputType="phone"
+        app:layout_constraintStart_toEndOf="@+id/countryCode_Input"
+        app:layout_constraintTop_toTopOf="@+id/countryCode_Input" />
+
+
+    <EditText
+        android:id="@+id/countryCode_Input"
+
+        android:layout_width="54dp"
+        android:layout_height="44dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="480dp"
+        android:ems="10"
+        android:hint="972"
+        android:inputType="number"
+        android:paddingStart="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/validtion_text"
+        android:layout_width="119dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="144dp"
+        android:gravity="center"
+        android:text="TextView"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Btn_sendCode"
+        app:layout_constraintVertical_bias="0.563" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
