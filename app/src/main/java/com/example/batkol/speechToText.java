@@ -34,82 +34,97 @@ public class speechToText extends AppCompatActivity {
     private Button button;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_speech_to_text);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        {
             checkPermission();
         }
 
-        editText=findViewById(R.id.text);
-        button=findViewById(R.id.button2);
+        editText = findViewById(R.id.text);
+        button = findViewById(R.id.button2);
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
         final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
-        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+        speechRecognizer.setRecognitionListener(new RecognitionListener()
+        {
             @Override
-            public void onReadyForSpeech(Bundle bundle) {
+            public void onReadyForSpeech(Bundle bundle)
+            {
 
             }
 
             @Override
-            public void onBeginningOfSpeech() {
+            public void onBeginningOfSpeech()
+            {
                 editText.setText("Listening...");
 
             }
 
             @Override
-            public void onRmsChanged(float v) {
+            public void onRmsChanged(float v)
+            {
 
             }
 
             @Override
-            public void onBufferReceived(byte[] bytes) {
+            public void onBufferReceived(byte[] bytes)
+            {
 
             }
 
             @Override
-            public void onEndOfSpeech() {
+            public void onEndOfSpeech()
+            {
 
             }
 
             @Override
-            public void onError(int i) {
+            public void onError(int i)
+            {
 
             }
 
             @Override
-            public void onResults(Bundle bundle) {
+            public void onResults(Bundle bundle)
+            {
 
                 ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 editText.setText(data.get(0));
             }
 
             @Override
-            public void onPartialResults(Bundle bundle) {
+            public void onPartialResults(Bundle bundle)
+            {
 
             }
 
             @Override
-            public void onEvent(int i, Bundle bundle) {
+            public void onEvent(int i, Bundle bundle)
+            {
 
             }
         });
 
-        button.setOnTouchListener(new View.OnTouchListener() {
+        button.setOnTouchListener(new View.OnTouchListener()
+        {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+            public boolean onTouch(View view, MotionEvent motionEvent)
+            {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP)
+                {
                     speechRecognizer.stopListening();
                 }
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                {
 
                     speechRecognizer.startListening(speechRecognizerIntent);
                 }
@@ -117,26 +132,6 @@ public class speechToText extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
-
-
-
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-
-
-
-
     }
 
 

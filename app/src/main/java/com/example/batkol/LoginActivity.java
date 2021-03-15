@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,6 +87,7 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e)
             {
+                Log.d("Login", e.getMessage());
                 tv_validation_text.setText(e.getMessage());
                 tv_validation_text.setTextColor(Color.RED);
                 tv_validation_text.setVisibility(View.VISIBLE);
