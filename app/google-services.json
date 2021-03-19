@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "114689579741",
-    "project_id": "batkol-8ee4f",
-    "storage_bucket": "batkol-8ee4f.appspot.com"
+    "project_number": "430775508677",
+    "project_id": "batkol-c9978",
+    "storage_bucket": "batkol-c9978.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:114689579741:android:dfa28ba820409367705934",
+        "mobilesdk_app_id": "1:430775508677:android:02cd11f355867f44fa9aac",
         "android_client_info": {
           "package_name": "com.example.batkol"
         }
       },
       "oauth_client": [
         {
-          "client_id": "114689579741-uosn58d1n5ijkt1e6sqjm9kdjc883k4o.apps.googleusercontent.com",
+          "client_id": "430775508677-oub71kfof7ro6rlliip25md6kfedccmu.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD-BJWKNwFi0OUuLOydPxC5ji0rX7dylEY"
+          "current_key": "AIzaSyDU8caNfSPJq1gZl_aWSGT9h-MDtwjUFiY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "114689579741-uosn58d1n5ijkt1e6sqjm9kdjc883k4o.apps.googleusercontent.com",
+              "client_id": "430775508677-oub71kfof7ro6rlliip25md6kfedccmu.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

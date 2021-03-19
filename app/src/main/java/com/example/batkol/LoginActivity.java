@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity
                             .setCallbacks(mCallbacks)
                             .build();
                     PhoneAuthProvider.verifyPhoneNumber(options);
+
                 }
                 else
                 {
@@ -74,13 +75,16 @@ public class LoginActivity extends AppCompatActivity
 
             }
         });
+        // Force reCAPTCHA flow
+
 
         mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks()
         {
             @Override
-            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential)
+            public void onVerificationCompleted(@NonNull PhoneAuthCredential credential)
             {
-                signIn(phoneAuthCredential);
+                signIn(credential);
+
             }
 
             @Override

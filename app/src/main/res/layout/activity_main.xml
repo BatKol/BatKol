@@ -7,14 +7,64 @@ android:layout_height="match_parent"
     android:background="@drawable/bg_main"
 tools:context=".MainActivity">
 
-<Button
-    android:id="@+id/Btn_Logout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="84dp"
-    android:text="Log Out"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent" />
+    <EditText
+        android:id="@+id/ExistUserEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="textEmailAddress"
+        android:textColorHint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/ExistUserPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.65" />
+
+    <EditText
+        android:id="@+id/ExistUserPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="280dp"
+        android:layout_marginBottom="205dp"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColorHint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/Login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53" />
+
+    <Button
+        android:id="@+id/Login"
+        android:layout_width="117dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="52dp"
+        android:backgroundTint="#701A0845"
+        android:text="הכנס"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ExistUserPassword" />
+
+    <Button
+        android:id="@+id/buttonRegister"
+        android:layout_width="114dp"
+        android:layout_height="59dp"
+        android:layout_marginStart="147dp"
+        android:layout_marginTop="209dp"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="21dp"
+        android:text="הירשם"
+        app:layout_constraintBottom_toTopOf="@+id/Login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ExistUserPassword" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
