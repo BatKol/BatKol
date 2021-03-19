@@ -17,52 +17,57 @@
         android:text="Send Code"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumber_Input" />
+
 
     <EditText
-        android:paddingStart="10dp"
         android:id="@+id/phoneNumber_Input"
         android:layout_width="198dp"
         android:layout_height="42dp"
-        android:textColor="@color/white"
-
         android:layout_marginStart="40dp"
         android:ems="10"
-        android:textColorHint="@color/white"
+
         android:hint="Enter Phone Number"
         android:inputType="phone"
+        android:paddingStart="10dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/countryCode_Input"
         app:layout_constraintTop_toTopOf="@+id/countryCode_Input" />
-
 
     <EditText
         android:id="@+id/countryCode_Input"
 
         android:layout_width="54dp"
         android:layout_height="44dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="480dp"
+        android:layout_marginStart="92dp"
         android:ems="10"
         android:hint="972"
         android:inputType="number"
         android:paddingStart="10dp"
         android:textColor="@color/white"
         android:textColorHint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.362" />
 
     <TextView
         android:id="@+id/validtion_text"
         android:layout_width="119dp"
         android:layout_height="37dp"
-        android:layout_marginEnd="144dp"
         android:gravity="center"
         android:text="TextView"
         android:textSize="18sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Btn_sendCode"
-        app:layout_constraintVertical_bias="0.563" />
+        app:layout_constraintVertical_bias="0.533" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
