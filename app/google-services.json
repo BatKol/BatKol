@@ -14,17 +14,6 @@
       },
       "oauth_client": [
         {
-<<<<<<< HEAD
-=======
-          "client_id": "430775508677-u6hmkd9d1doo0mpit0cjipog5mbi83dn.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.batkol",
-            "certificate_hash": "b76821c62c293618e69f5db26ae74a059c6e13f1"
-          }
-        },
-        {
->>>>>>> ca85fb1acc4be6fa792a4dd02d88560fdf362a49
           "client_id": "430775508677-oub71kfof7ro6rlliip25md6kfedccmu.apps.googleusercontent.com",
           "client_type": 3
         }
