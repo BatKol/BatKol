@@ -3,10 +3,11 @@ package com.example.batkol;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class newRecordActivity extends AppCompatActivity
+public class newRecordActivity extends AppCompatActivity implements View.OnClickListener
 {
     TextView tv_recordLabel;
     Button btn_record;
@@ -19,5 +20,12 @@ public class newRecordActivity extends AppCompatActivity
 
         tv_recordLabel = (TextView)findViewById(R.id.recordLabel);
         btn_record = (Button)findViewById(R.id.recordBtn);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == btn_record){
+
+        }
     }
 }
