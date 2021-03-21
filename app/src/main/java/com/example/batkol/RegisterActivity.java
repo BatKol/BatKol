@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,13 +17,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText userName, userEmail, userPassword,userPhone,id;
     private Button register;
-
-
+    private FirebaseAuth mAuth;
 
 
 
@@ -32,32 +33,11 @@ public class RegisterActivity extends AppCompatActivity {
         FirebaseAuth fireBaseAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_register);
         setupUIviews();
-        register.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                if (validate()) {
-                    String user_email = userEmail.getText().toString().trim();
-                    String user_password = userPassword.getText().toString().trim();
-                    fireBaseAuth.createUserWithEmailAndPassword(user_email,user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(RegisterActivity.this,"register successful",Toast.LENGTH_LONG).show();
-
-                                startActivity(new Intent(RegisterActivity.this,MainActivity.class));
-                            }else{
-                                Toast.makeText(RegisterActivity.this,"register failed",Toast.LENGTH_LONG).show();
-
-                            }
-                        }
-                    });
-
-                }
-            }
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
 
-        });
 
     }
 
@@ -67,10 +47,11 @@ public class RegisterActivity extends AppCompatActivity {
         userPassword = (EditText) findViewById(R.id.edUserPassword);
         userPhone = (EditText)findViewById(R.id.editTextPhone);
         register = (Button) findViewById(R.id.register);
+        register.setOnClickListener(this::onClick);
     }
 
-    private Boolean validate() {
-        Boolean ans = false;
+    private boolean validate() {
+        boolean ans = false;
         String name = userName.getText().toString();
         String Email = userEmail.getText().toString();
         String Password = userPassword.getText().toString();
@@ -82,5 +63,47 @@ public class RegisterActivity extends AppCompatActivity {
             ans = true;
         }
         return ans;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == register){
+            registerMe();
+            System.out.println("starting..@@@.");
+
+        }
+    }
+
+    private void registerMe() {
+        if(!validate()) {
+            Toast.makeText(RegisterActivity.this,"register failed because of Liad",Toast.LENGTH_LONG).show();
+            return;
+        }
+        System.out.println("starting...");
+        String user_email = userEmail.getText().toString().trim();
+        String user_password = userPassword.getText().toString().trim();
+        System.out.println(user_email+" "+user_password);
+        mAuth.createUserWithEmailAndPassword(user_email, user_password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d("create user", "createUserWithEmail:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+//                            if (user!=null)
+                            Toast.makeText(RegisterActivity.this, "welcome ."+ user,
+                                    Toast.LENGTH_SHORT).show();//                            //updateUI(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w("fail create", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(RegisterActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                            //updateUI(null);
+                        }
+
+                        // ...
+                    }
+                });
     }
 }
