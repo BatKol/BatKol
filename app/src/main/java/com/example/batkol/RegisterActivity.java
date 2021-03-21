@@ -28,14 +28,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
-
         super.onCreate(savedInstanceState);
+        FirebaseAuth fireBaseAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_register);
         setupUIviews();
         register.setOnClickListener(new View.OnClickListener() {
-            private FirebaseAuth fireBaseAuth = FirebaseAuth.getInstance();
+
             @Override
             public void onClick(View view) {
                 if (validate()) {
