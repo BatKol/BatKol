@@ -6,9 +6,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +21,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -31,22 +39,31 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import utils.AlgorithmsLibrary;
 
 public class newRecordActivity extends AppCompatActivity implements View.OnClickListener
 {
     public static final Integer RecordAudioRequestCode = 1;
-    EditText filename;
+    EditText description;
     private static final String LOG_TAG ="newRecordActivity" ;
     TextView tv_recordLabel;
     EditText recordName;
     Button btn_record, btn_upload, btn_delete, btn_stop_record,btn_play;
     private MediaRecorder recorder = null;
-//    MediaPlayer mediaPlayer = new MediaPlayer();
     boolean playing = false, recording = false,canUpload = false;
     String recordNameS = null;
     FirebaseStorage storage = FirebaseStorage.getInstance();
     private MediaPlayer   player = null;
+    FirebaseUser user;
+    FirebaseFirestore db;
+    FirebaseAuth mAuth;
 
 
     @Override
@@ -54,9 +71,6 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_record);
-//        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-//        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
-//        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
         tv_recordLabel = (TextView)findViewById(R.id.recordLabel);
         recordName = (EditText)findViewById(R.id.edix_filename);
@@ -64,10 +78,15 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         btn_upload = (Button)findViewById(R.id.button_upload);
         btn_play = (Button)findViewById(R.id.button_play);
         btn_delete = (Button)findViewById(R.id.button_delete);
+        description = findViewById(R.id.description_text);
 
         btn_delete.setVisibility(View.INVISIBLE);
         btn_upload.setVisibility(View.INVISIBLE);
         btn_play.setVisibility(View.INVISIBLE);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        user = mAuth.getCurrentUser();
 
         btn_delete.setOnClickListener(this);
         btn_upload.setOnClickListener(this);
@@ -131,20 +150,73 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         try {
             InputStream stream = new FileInputStream(new File(recordNameS));
             UploadTask uploadTask = mountainsRef.putStream(stream);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(newRecordActivity.this, "Fail upload to the server",
-                            Toast.LENGTH_SHORT).show();
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+
+                    // Continue with the task to get the download URL
+                    return mountainsRef.getDownloadUrl();
                 }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
                 @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // contains file metadata such as size, content-type, etc.
-                    Toast.makeText(newRecordActivity.this, "Success upload "+ taskSnapshot.getMetadata()+"to the server",
-                            Toast.LENGTH_SHORT).show();
-                    // ...
-                    finish();
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        uploadToFirebase(downloadUri);
+                    } else {
+                       Toast.makeText(newRecordActivity.this,"fail to upload",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                private void uploadToFirebase(Uri downloadUri) {
+                    String userID = user.getUid();
+                    String username = user.getDisplayName();
+                    String fileName = recordName.getText().toString();
+                    String descrition = description.getText().toString();
+                    String url = downloadUri.toString();
+                    Date date = new Date();
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat pf= new SimpleDateFormat("dd.MMM.yyyy");
+                    String dateF = pf.format(date);
+                    //postID
+                    String postID = AlgorithmsLibrary.hashMD5(userID+fileName+descrition+date);
+                    AudioPosts post = new AudioPosts(username,fileName,url,descrition,postID,userID,date);
+
+
+                    db.collection("Posts").document(postID)
+                            .set(post)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("UploadTask", "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("UploadTask", "Error writing document", e);
+                                }
+                            });
+                    db.collection("Users").document(userID).collection("Posts").document(postID)
+                            .set(post)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d("UploadTask", "DocumentSnapshot successfully written!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w("UploadTask", "Error writing document", e);
+                                }
+                            });
+
+
+
+
                 }
             });
 
