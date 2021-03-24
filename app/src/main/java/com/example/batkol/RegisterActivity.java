@@ -1,12 +1,14 @@
 package com.example.batkol;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,16 +16,22 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText userName, userEmail, userPassword,userPhone,id;
     private Button register;
     private FirebaseAuth mAuth;
+    FirebaseFirestore db;
+    User userObject;
 
 
 
@@ -33,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
         setupUIviews();
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
 
@@ -66,14 +75,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         if (v == register){
             registerMe();
-            System.out.println("starting..@@@.");
 
         }
     }
 
     private void registerMe() {
         if(!validate()) {
-            Toast.makeText(RegisterActivity.this,"register failed because of Liad",Toast.LENGTH_LONG).show();
+            Toast.makeText(RegisterActivity.this,"pls fill the form correctly",Toast.LENGTH_LONG).show();
             return;
         }
         System.out.println("starting...");
@@ -88,19 +96,63 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("create user", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-//                            if (user!=null)
                             Toast.makeText(RegisterActivity.this, "welcome ."+ user,
-                                    Toast.LENGTH_SHORT).show();//                            //updateUI(user);
+                                    Toast.LENGTH_LONG).show();//
+                            if (user!=null) {
+                                finish();
+                                updateUserInformation(user);
+                            }
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("fail create", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                                    Toast.LENGTH_LONG).show();
                             //updateUI(null);
                         }
 
                         // ...
                     }
                 });
+    }
+
+    private void updateUserInformation(FirebaseUser firebaseUser) {
+        userObject = new User(firebaseUser.getUid(),userName.getText().toString(),userPhone.getText().toString(), userEmail.getText().toString());
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(userName.getText().toString())
+                .build();
+
+        firebaseUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("user update", "User profile updated.");
+                        }
+                    }
+                });
+        db.collection("Users").document(firebaseUser.getUid())
+                .set(userObject)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("TAG", "DocumentSnapshot successfully written!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w("TAG", "Error writing document", e);
+                    }
+                });
+
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        if(mAuth.getCurrentUser()!=null){
+            startActivity(new  Intent(RegisterActivity.this,Main_flow.class));
+
+        }
     }
 }

@@ -3,6 +3,7 @@ package utils;
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +52,12 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         RecordCard c = data.get(i);
         String creator = c.getCreatorName();
         String Date = c.getPublishDate().toString();
-        //String recordUrl = c.getRecordUrl();
+        String recordUrl = c.getRecordUrl();
 
         viewHolder.getCreator().setText(creator);
         viewHolder.getPublishDate().setText(Date);
 
-        fetchRecord(viewHolder, viewHolder.getMediaPlayer());
+        fetchRecord(viewHolder, viewHolder.getMediaPlayer(), recordUrl);
 
 /*        viewHolder.GetmyView().setOnClickListener(new View.OnClickListener()
         {
@@ -118,10 +119,12 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         public SeekBar getSeekBarTime() { return seekBarTime; }
     }
 
-    public void initPlayer(ViewHolder view, MediaPlayer recordPlayer)
+    public void initPlayer(ViewHolder view, MediaPlayer recordPlayer, String url)
     {
 
-        recordPlayer = MediaPlayer.create(currentActivity, R.raw.free_sound);
+
+        recordPlayer = MediaPlayer.create(currentActivity, Uri.parse(url));
+        
         recordPlayer.setLooping(false);
         recordPlayer.seekTo(0);
         recordPlayer.setVolume(0.5f, 0.5f);
@@ -209,11 +212,9 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
     }
 
 
-    public void fetchRecord(ViewHolder view, MediaPlayer recordPlayer){
+    public void fetchRecord(ViewHolder view, MediaPlayer recordPlayer, String url){
         // call db to fetch record
-        String record = "";
-
-        initPlayer(view, recordPlayer);
+        initPlayer(view, recordPlayer, url);
     }
 
 
