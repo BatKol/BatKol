@@ -16,12 +16,13 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".AudioRecordTest"></activity>
         <activity android:name=".BatKolHomeActivity" />
+        <activity android:name=".Main_flow" />
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/Theme.BatKol.NoActionBar" />
         <activity android:name=".OtpActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".LoginOTP" />
         <activity
             android:name=".speechToText"
             android:label="@string/title_activity_speech_to_text" />

@@ -64,6 +64,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    Boolean finishUpload = false;
 
 
     @Override
@@ -191,7 +192,9 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("UploadTask", "DocumentSnapshot successfully written!");
+                                    finishUpload = true;
                                 }
+
                             })
                             .addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -205,6 +208,8 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Log.d("UploadTask", "DocumentSnapshot successfully written!");
+                                    finish();
+
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {

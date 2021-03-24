@@ -14,6 +14,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -28,7 +29,7 @@ public class Main_flow extends AppCompatActivity{
     ArrayList<AudioPosts>  posts = new ArrayList<>();
     ListView audio_posts;
     Button searchBT,newRecordBT,profileBT;
-    int refIndex = 0;
+    DocumentSnapshot lastVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class Main_flow extends AppCompatActivity{
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
-        add10Posts();
+        first10Posts();
 
         newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
     }
@@ -51,17 +52,38 @@ public class Main_flow extends AppCompatActivity{
 
     }
     private void add10Posts(){
-        db.collection("Posts").startAt(refIndex).limit(10)
+        db.collection("Posts").startAfter(lastVisible).limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            lastVisible = task.getResult().getDocuments()
+                                    .get(task.getResult().size() -1);
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("Posts", document.getId() + " => " + document.getData());
                                 posts.add(document.toObject(AudioPosts.class));
                             }
-                            refIndex = refIndex+10;
+                        } else {
+                            Log.d("Posts", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+
+    }private void first10Posts(){
+        db.collection("Posts").limit(10)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            lastVisible = task.getResult().getDocuments()
+                                    .get(task.getResult().size() -1);
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("Posts", document.getId() + " => " + document.getData());
+                                posts.add(document.toObject(AudioPosts.class));
+                            }
                         } else {
                             Log.d("posts", "Error getting documents: ", task.getException());
                         }

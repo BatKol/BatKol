@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                             else{
-                                startActivity(new  Intent(MainActivity.this,BatKolHomeActivity.class));
+                                startActivity(new  Intent(MainActivity.this,Main_flow.class));
                             }
                         }
                     });

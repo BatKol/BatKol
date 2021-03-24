@@ -25,7 +25,7 @@ import com.google.firebase.auth.PhoneAuthProvider;
 
 import java.util.concurrent.TimeUnit;
 
-public class LoginActivity extends AppCompatActivity
+public class LoginOTP extends AppCompatActivity
 {
     private EditText et_countryCode, et_phoneNumber;
     private TextView tv_validation_text;
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity
                     PhoneAuthOptions options = PhoneAuthOptions.newBuilder(FAuth)
                             .setPhoneNumber(phoneNumber)
                             .setTimeout(60L, TimeUnit.SECONDS)
-                            .setActivity(LoginActivity.this)
+                            .setActivity(LoginOTP.this)
                             .setCallbacks(mCallbacks)
                             .build();
                     PhoneAuthProvider.verifyPhoneNumber(options);
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity
                     @Override
                     public void run()
                     {
-                        Intent otpIntent = new Intent(LoginActivity.this, OtpActivity.class);
+                        Intent otpIntent = new Intent(LoginOTP.this, OtpActivity.class);
                         otpIntent.putExtra("verify_code", s);
                         startActivity(otpIntent);
                     }
@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity
 
     private void sendToMain()
     {
-        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        startActivity(new Intent(LoginOTP.this, MainActivity.class));
         finish();
     }
 
