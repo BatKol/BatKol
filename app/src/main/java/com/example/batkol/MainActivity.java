@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.buttonRegister);
 
 
+
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebseAuth ){
@@ -98,6 +99,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new  Intent(MainActivity.this,RegisterActivity.class));
             }
         });
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        if(mFirebaseAuth.getCurrentUser()!=null){
+            startActivity(new  Intent(MainActivity.this,Main_flow.class));
+
+        }
     }
 
 

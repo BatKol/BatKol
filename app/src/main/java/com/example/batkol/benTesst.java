@@ -33,7 +33,6 @@ public class benTesst extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ben_tesst);
-
         cards = new ArrayList<RecordCard>();
 
         progressb = (ProgressBar)findViewById(R.id.progressBar);
@@ -42,6 +41,7 @@ public class benTesst extends AppCompatActivity
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
         initRecyclerAdapter();
+
         addNewCard("Liad", "now");
         addNewCard("Ben", "1 day ago");
         addNewCard("Amichai", "3 min ago");
