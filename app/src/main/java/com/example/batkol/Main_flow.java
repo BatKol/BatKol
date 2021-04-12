@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -61,6 +62,7 @@ public class Main_flow extends AppCompatActivity{
         first10Posts();
 
         newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
+        searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, TestElastic.class)));
     }
 
     public void help(View view) {
