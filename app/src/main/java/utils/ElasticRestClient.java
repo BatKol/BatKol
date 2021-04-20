@@ -7,9 +7,13 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ElasticRestClient {
 
@@ -26,6 +30,18 @@ public class ElasticRestClient {
     public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.addHeader("content-type", "application/json");
         client.post(getAbsoluteUrl(url), params, responseHandler);
+    }public static void postsearch( String word, AsyncHttpResponseHandler responseHandler) {
+        String url = "posts/_search";
+        client.addHeader("content-type", "application/json");
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("query", new JSONObject().put("match",new JSONObject().put("stt",word)));
+            StringEntity entity = new StringEntity(jsonParams.toString());
+            client.post(null,getAbsoluteUrl(url), entity,"application/json",responseHandler);
+
+        } catch (JSONException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
     public static void put(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
         client.addHeader("content-type", "application/json");
