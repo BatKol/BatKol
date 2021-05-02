@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +35,7 @@ public class Main_flow extends AppCompatActivity{
     FirebaseAuth mAuth;
     ArrayList<AudioPosts>  posts = new ArrayList<>();
     ListView audio_posts;
-    Button searchBT,newRecordBT,profileBT;
+    Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton;
     DocumentSnapshot lastVisible;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
@@ -49,6 +50,8 @@ public class Main_flow extends AppCompatActivity{
         searchBT = findViewById(R.id.search_btn);
         newRecordBT = findViewById(R.id.record_btn);
         profileBT = findViewById(R.id.myprofile_btn);
+        UPbutton = findViewById(R.id.UPbutton);
+        DOWNbutton = findViewById(R.id.DOWNbutton);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -61,7 +64,11 @@ public class Main_flow extends AppCompatActivity{
         first10Posts();
 
         newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
+        searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, TestElastic.class)));
+        UPbutton.setOnClickListener(v->recyclerView.smoothScrollToPosition(recyclerView.getVerticalScrollbarPosition()+1));
+
     }
+
 
     public void help(View view) {
 

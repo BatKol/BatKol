@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
@@ -155,7 +156,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
             return;
         }
         StorageReference storageRef = storage.getReference();
-        StorageReference mountainsRef = storageRef.child("audio/"+recordName.getText().toString()+new Date().toString()+".3gp");
+        StorageReference mountainsRef = storageRef.child("audio/"+recordName.getText().toString()+new Date().toString()+".wav");
         try {
             InputStream stream = new FileInputStream(new File(recordNameS));
             UploadTask uploadTask = mountainsRef.putStream(stream);
@@ -291,8 +292,18 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
     }
     private void startRecording() {
         recordNameS = getExternalCacheDir().getAbsolutePath();
-        recordNameS += "/audiorecordtest.3gp";
+        recordNameS += "/audiorecordtest.wav";
         recorder = new MediaRecorder();
+        //
+//        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+//        recorder.setOutputFormat(AudioFormat.ENCODING_PCM_16BIT);
+//        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+////        recorder.setAudioChannels(1);
+////        recorder.setAudioEncodingBitRate(128000);
+////        recorder.setAudioSamplingRate(48000);
+//        recorder.setOutputFile(recordNameS);
+        //
+
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         recorder.setOutputFile(recordNameS);
