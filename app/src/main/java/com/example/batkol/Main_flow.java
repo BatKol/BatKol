@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,11 +36,13 @@ public class Main_flow extends AppCompatActivity{
     FirebaseAuth mAuth;
     ArrayList<AudioPosts>  posts = new ArrayList<>();
     ListView audio_posts;
-    Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton;
+    LinearLayout myFlow;
+    Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton,TestButton;
     DocumentSnapshot lastVisible;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
     private RecordList_adapter cardsAdapter;
+    private int postNumberIndex=0;
 
 
     @Override
@@ -51,7 +54,8 @@ public class Main_flow extends AppCompatActivity{
         newRecordBT = findViewById(R.id.record_btn);
         profileBT = findViewById(R.id.myprofile_btn);
         UPbutton = findViewById(R.id.UPbutton);
-        DOWNbutton = findViewById(R.id.DOWNbutton);
+        TestButton=findViewById(R.id.TESTbutton);
+        myFlow = findViewById(R.id.linearLayFlow);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -62,17 +66,32 @@ public class Main_flow extends AppCompatActivity{
         initRecyclerAdapter();
 
         first10Posts();
-
+        TestButton.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, speechToText.class)));
         newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
         searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, TestElastic.class)));
-        UPbutton.setOnClickListener(v->recyclerView.smoothScrollToPosition(recyclerView.getVerticalScrollbarPosition()+1));
+        UPbutton.setOnClickListener(v->{nextPost();});
+
+
+    }
+    private void nextPost(){
+        myFlow.removeAllViews();
+        Log.d("numberofpost", String.valueOf(recyclerView.getChildCount()));
+
+//        recyclerView.setVisibility(View.VISIBLE);
+        if(recyclerView.getChildCount() != 0) {
+            View tempview = recyclerView.getChildAt(postNumberIndex++);
+            recyclerView.removeView(tempview);
+            if(tempview!= null) {
+                myFlow.addView(tempview);
+            }
+            else
+                postNumberIndex--;
+        }
 
     }
 
 
-    public void help(View view) {
 
-    }
     private void add10Posts(){
         db.collection("Posts").startAfter(lastVisible).limit(10)
                 .get()
@@ -107,6 +126,7 @@ public class Main_flow extends AppCompatActivity{
                                 posts.add(document.toObject(AudioPosts.class));
                             }
                             addNewCard();
+                            nextPost();
                         } else {
                             Log.d("posts", "Error getting documents: ", task.getException());
                         }
