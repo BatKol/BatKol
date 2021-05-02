@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BatKol"
         android:usesCleartextTraffic="true">
-        <activity android:name=".TestElastic"></activity>
+        <activity android:name=".SearchPosts"></activity>
+        <activity android:name=".TestElastic" />
 
         <uses-library
             android:name="com.google.android.wearable"
