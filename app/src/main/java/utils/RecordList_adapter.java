@@ -59,6 +59,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
 
         fetchRecord(viewHolder, viewHolder.getMediaPlayer(), recordUrl);
 
+
 /*        viewHolder.GetmyView().setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -101,6 +102,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
             tv_creatorName = itemView.findViewById(R.id.record_creator);
             tv_datePublish = itemView.findViewById(R.id.record_publish_date);
             btn_play = itemView.findViewById(R.id.btnPlay);
+
         }
 
         public TextView getCreator() { return tv_creatorName; }
@@ -136,6 +138,8 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
 
         view.getSeekBarTime().setMax(recordPlayer.getDuration());
         MediaPlayer record = recordPlayer;
+        record.start();
+
         view.getSeekBarTime().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
             @Override

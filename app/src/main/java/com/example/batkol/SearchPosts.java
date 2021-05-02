@@ -2,14 +2,19 @@ package com.example.batkol;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,9 +23,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.gson.JsonArray;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -45,7 +47,7 @@ public class SearchPosts extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
     private RecordList_adapter cardsAdapter;
-    ArrayList<AudioPosts>  posts = new ArrayList<>();
+    ArrayList<AudioPosts> posts = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,21 +56,25 @@ public class SearchPosts extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
-        initRecyclerAdapter();
+//        initRecyclerAdapter();
         cards = new ArrayList<RecordCard>();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         search = findViewById(R.id.buttonsearch);
         searchTags = findViewById(R.id.editTextsearch);
         recyclerView = findViewById(R.id.recyclerView2);
+
         search.setOnClickListener((v)->{
             if (!searchTags.getText().toString().equals("")){
                 startshearch(searchTags.getText().toString());
             }
         });
+        initRecyclerAdapter();
 
     }
 
     public void startshearch(String word) {
+        cards.clear();
+        initRecyclerAdapter();
         ElasticRestClient.postsearch(word, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

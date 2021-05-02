@@ -36,11 +36,11 @@ public class Main_flow extends AppCompatActivity{
     FirebaseAuth mAuth;
     ArrayList<AudioPosts>  posts = new ArrayList<>();
     ListView audio_posts;
-    LinearLayout myFlow;
     Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton,TestButton;
     DocumentSnapshot lastVisible;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
+    private ArrayList<RecordCard> cards_visible;
     private RecordList_adapter cardsAdapter;
     private int postNumberIndex=0;
 
@@ -55,12 +55,13 @@ public class Main_flow extends AppCompatActivity{
         profileBT = findViewById(R.id.myprofile_btn);
         UPbutton = findViewById(R.id.UPbutton);
         TestButton=findViewById(R.id.TESTbutton);
-        myFlow = findViewById(R.id.linearLayFlow);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
         cards = new ArrayList<RecordCard>();
+        cards_visible = new ArrayList<RecordCard>();
+
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
         initRecyclerAdapter();
@@ -68,25 +69,32 @@ public class Main_flow extends AppCompatActivity{
         first10Posts();
         TestButton.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, speechToText.class)));
         newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
-        searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, TestElastic.class)));
+        searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, SearchPosts.class)));
         UPbutton.setOnClickListener(v->{nextPost();});
 
 
     }
     private void nextPost(){
-        myFlow.removeAllViews();
-        Log.d("numberofpost", String.valueOf(recyclerView.getChildCount()));
-
-//        recyclerView.setVisibility(View.VISIBLE);
-        if(recyclerView.getChildCount() != 0) {
-            View tempview = recyclerView.getChildAt(postNumberIndex++);
-            recyclerView.removeView(tempview);
-            if(tempview!= null) {
-                myFlow.addView(tempview);
-            }
-            else
-                postNumberIndex--;
+        if (postNumberIndex<cards.size()) {
+            cards_visible.clear();
+            cards_visible.add(cards.get(postNumberIndex));
+            cardsAdapter.notifyDataSetChanged();
+            postNumberIndex++;
         }
+
+//        myFlow.removeAllViews();
+//        Log.d("numberofpost", String.valueOf(recyclerView.getChildCount()));
+//
+////        recyclerView.setVisibility(View.VISIBLE);
+//        if(recyclerView.getChildCount() != 0) {
+//            View tempview = recyclerView.getChildAt(postNumberIndex++);
+//            recyclerView.removeView(tempview);
+//            if(tempview!= null) {
+//                myFlow.addView(tempview);
+//            }
+//            else
+//                postNumberIndex--;
+//        }
 
     }
 
@@ -137,16 +145,14 @@ public class Main_flow extends AppCompatActivity{
     }
     // create new card from given snapshot of seller products
     private void addNewCard(){
+        System.out.println(posts.size());
 
         RecordCard card = null;
         for(int i = 0; i < posts.size(); i++)
         {
             card = new RecordCard();
-
             card.setCreatorName(posts.get(i).name);
-
             card.setPublishDate(posts.get(i).date.toString());
-
             card.setRecordUrl(posts.get(i).url);
             cards.add(card);
 
@@ -159,7 +165,7 @@ public class Main_flow extends AppCompatActivity{
     // print the cards arrays on the current activity recyclerView
     private void initRecyclerAdapter() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        cardsAdapter = new RecordList_adapter(this,cards);
+        cardsAdapter = new RecordList_adapter(this,cards_visible);
         recyclerView.setAdapter(cardsAdapter);
 
     }
