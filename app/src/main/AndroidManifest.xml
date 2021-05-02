@@ -3,9 +3,6 @@
     package="com.example.batkol">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <uses-feature android:name="android.hardware.type.watch" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
@@ -18,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BatKol"
         android:usesCleartextTraffic="true">
-        <activity android:name=".TestElastic"></activity>
+        <activity android:name=".SearchPosts"></activity>
+        <activity android:name=".TestElastic" />
 
         <uses-library
             android:name="com.google.android.wearable"

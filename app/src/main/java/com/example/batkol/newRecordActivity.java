@@ -148,7 +148,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
             return;
         }
         StorageReference storageRef = storage.getReference();
-        StorageReference mountainsRef = storageRef.child("audio/"+recordName.getText().toString()+new Date().toString()+".wav");
+        StorageReference mountainsRef = storageRef.child("audio/"+recordName.getText().toString()+new Date().toString()+".3gp");
         try {
             InputStream stream = new FileInputStream(new File(recordNameS));
             UploadTask uploadTask = mountainsRef.putStream(stream);
@@ -276,7 +276,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
     }
     private void startRecording() {
         recordNameS = getExternalCacheDir().getAbsolutePath();
-        recordNameS += "/audiorecordtest.wav";
+        recordNameS += "/audiorecordtest.3gp";
         recorder = new MediaRecorder();
         //
 //        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
