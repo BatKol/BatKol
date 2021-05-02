@@ -7,12 +7,15 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -41,6 +44,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -65,6 +70,8 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     Boolean finishUpload = false;
+    STT stt;
+    ArrayList<String> datastt= new ArrayList<>();
 
 
     @Override
@@ -97,6 +104,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         {
             checkPermission();
         }
+        stt= new STT(this,this,datastt,new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH));
 //        btn_record.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -259,8 +267,16 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         if (!recording){
             return;
         }
-        recorder.stop();
+       recorder.stop();
         recorder.release();
+        stt.StoptSTT(()->{
+            System.out.println(Arrays.toString(new ArrayList[]{datastt}));
+            System.out.println("ready to send");
+            Log.e("liads", "ready to send liad");
+
+            //... send to elastic....
+        });
+
         recorder = null;
         recording = false;
         canUpload = true;
@@ -289,6 +305,8 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         }
         recording = true;
         recorder.start();
+        stt.StartSTT();
+
         tv_recordLabel.setText("Tap to Stop");
         btn_record.setText("Tap to Stop");
     }

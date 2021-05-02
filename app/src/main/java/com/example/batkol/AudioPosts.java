@@ -3,8 +3,18 @@ package com.example.batkol;
 import java.util.Date;
 
 public class AudioPosts {
-    String name, fileName, description, url,postID,userID;
+    String name, fileName, description, url,postID,userID,stt;
     Date date;
+    public AudioPosts(String name,String fileName, String url, String description,String postID,String userID,Date date,String stt) {
+        this.name = name;
+        this.fileName = fileName;
+        this.date = date;
+        this.description = description;
+        this.url = url;
+        this.userID = userID;
+        this.postID = postID;
+        this.stt=stt;
+    }
     public AudioPosts(String name,String fileName, String url, String description,String postID,String userID,Date date) {
         this.name = name;
         this.fileName = fileName;
