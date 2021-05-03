@@ -138,7 +138,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
 
         view.getSeekBarTime().setMax(recordPlayer.getDuration());
         MediaPlayer record = recordPlayer;
-        record.start();
+        //record.start();
 
         view.getSeekBarTime().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
