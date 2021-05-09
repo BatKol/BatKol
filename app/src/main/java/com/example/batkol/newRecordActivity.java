@@ -66,7 +66,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
     boolean playing = false, recording = false,canUpload = false;
     String recordNameS = null;
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    private MediaPlayer   player = null;
+    private MediaPlayer player = null;
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;

@@ -123,12 +123,10 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         if (current_recordPlayer != null)
         {
             current_recordPlayer.stop();
-
-            //current_recordPlayer.release();
-
             current_recordPlayer = null;
         }
     }
+
 
     public void initPlayer(ViewHolder view, String url)
     {
@@ -219,7 +217,6 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
             }
         }catch (Exception e)
         {
-            e.printStackTrace();
             Toast.makeText(currentActivity, "Couldnot get record",Toast.LENGTH_LONG);
         }
     }
@@ -232,17 +229,19 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
                 @Override
                 public void onClick(View v)
                 {
-                    if(current_recordPlayer.isPlaying())
+                    if(current_recordPlayer != null)
                     {
-                        // is playing
-                        current_recordPlayer.pause();
-                        play.setBackgroundResource(R.drawable.ic_play);
-                    }
-                    else
-                    {
-                        // on pause
-                        current_recordPlayer.start();
-                        play.setBackgroundResource(R.drawable.ic_pause);
+                        if (current_recordPlayer.isPlaying())
+                        {
+                            // is playing
+                            current_recordPlayer.pause();
+                            play.setBackgroundResource(R.drawable.ic_play);
+                        } else
+                        {
+                            // on pause
+                            current_recordPlayer.start();
+                            play.setBackgroundResource(R.drawable.ic_pause);
+                        }
                     }
                 }
             });

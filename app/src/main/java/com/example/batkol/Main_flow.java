@@ -128,7 +128,6 @@ public class Main_flow extends AppCompatActivity{
     }
 
 
-
     private void add10Posts(){
         db.collection("Posts").startAfter(lastVisible).limit(10)
                 .get()
