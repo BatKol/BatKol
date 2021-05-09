@@ -2,6 +2,7 @@ package utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 public class AlgorithmsLibrary
 {
@@ -34,5 +35,15 @@ public class AlgorithmsLibrary
             e.printStackTrace();
         }
         return generatedPassword;
+    }
+    public static boolean stringInArray(ArrayList<String> ls,String s){
+        s = s.replaceAll(" ","");
+        for (int i = 0; i < ls.size();i++) {
+            String word = ls.get(i);
+            System.out.println( s+" "+word + " "+ s.equals(word));
+            if (s.equals(word))
+                return true;
+        }
+        return false;
     }
 }
