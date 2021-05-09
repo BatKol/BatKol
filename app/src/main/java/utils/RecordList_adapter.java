@@ -82,7 +82,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         private TextView tv_creatorName, tv_datePublish, tv_time, tv_duration;
         private Button btn_play;
         private View myView;
-        MediaPlayer recordPlayer;
+        private MediaPlayer recordPlayer;
         private SeekBar seekBarTime;
 
         public View GetmyView()

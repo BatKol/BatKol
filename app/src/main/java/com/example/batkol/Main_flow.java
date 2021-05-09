@@ -76,6 +76,7 @@ public class Main_flow extends AppCompatActivity{
     }
     private void nextPost(){
         if (postNumberIndex<cards.size()) {
+            
             cards_visible.clear();
             cards_visible.add(cards.get(postNumberIndex));
             cardsAdapter.notifyDataSetChanged();
