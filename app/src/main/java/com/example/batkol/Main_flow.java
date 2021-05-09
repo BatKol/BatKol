@@ -33,6 +33,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +88,6 @@ public class Main_flow extends AppCompatActivity{
         cards_visible = new ArrayList<RecordCard>();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-
         initRecyclerAdapter();
 
         first10Posts();
@@ -116,8 +116,12 @@ public class Main_flow extends AppCompatActivity{
         if (postNumberIndex<cards.size()) {
             cards_visible.clear();
             cards_visible.add(cards.get(postNumberIndex));
+
             cardsAdapter.notifyDataSetChanged();
             postNumberIndex++;
+            if (postNumberIndex>cards.size()-3)
+                add10Posts();
+            postNumberIndex = postNumberIndex % cards.size();
         }
 
 //        myFlow.removeAllViews();
@@ -145,11 +149,13 @@ public class Main_flow extends AppCompatActivity{
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            lastVisible = task.getResult().getDocuments()
-                                    .get(task.getResult().size() -1);
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("Posts", document.getId() + " => " + document.getData());
-                                posts.add(document.toObject(AudioPosts.class));
+                            if (task.getResult().size()>0) {
+                                lastVisible = task.getResult().getDocuments()
+                                        .get(task.getResult().size() - 1);
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d("Posts", document.getId() + " => " + document.getData());
+                                    posts.add(document.toObject(AudioPosts.class));
+                                }
                             }
                         } else {
                             Log.d("Posts", "Error getting documents: ", task.getException());

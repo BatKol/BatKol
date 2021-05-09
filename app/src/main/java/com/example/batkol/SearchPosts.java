@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import models.RecordCard;
 import utils.ElasticRestClient;
@@ -48,6 +49,7 @@ public class SearchPosts extends AppCompatActivity {
     private ArrayList<RecordCard> cards;
     private RecordList_adapter cardsAdapter;
     ArrayList<AudioPosts> posts = new ArrayList<>();
+    HashMap<String,Boolean> once = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,6 @@ public class SearchPosts extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
-//        initRecyclerAdapter();
         cards = new ArrayList<RecordCard>();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         search = findViewById(R.id.buttonsearch);
@@ -73,8 +74,10 @@ public class SearchPosts extends AppCompatActivity {
     }
 
     public void startshearch(String word) {
+        once = new HashMap<>();
+        posts.clear();
         cards.clear();
-        initRecyclerAdapter();
+        cardsAdapter.notifyDataSetChanged();
         ElasticRestClient.postsearch(word, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -88,7 +91,11 @@ public class SearchPosts extends AppCompatActivity {
                     for (int i = postArr.length()-1 ; i>=0;i--){
                         postID = ((JSONObject)postArr.get(i)).getJSONObject("_source").getString("postID");
                         stt = ((JSONObject)postArr.get(i)).getJSONObject("_source").getString("stt");
-                        getFromDbToCard(postID);
+                        if (once.get(postID) == null) {
+                            getFromDbToCard(postID);
+                            once.put(postID,true);
+                        }
+
 
                     }
 //                    JSONObject hit = (JSONObject) testV.getJSONObject("hits").getJSONArray("hits").get(0);
@@ -122,8 +129,8 @@ public class SearchPosts extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    posts.add(document.toObject(AudioPosts.class));
-                    addNewCard();
+//                    posts.add(document.toObject(AudioPosts.class));
+                    addNewCard(document.toObject(AudioPosts.class));
                     if (document.exists()) {
                         Log.d("get-post", "DocumentSnapshot data: " + document.getData());
                     } else {
@@ -143,22 +150,17 @@ public class SearchPosts extends AppCompatActivity {
 
     }
     // create new card from given snapshot of seller products
-    private void addNewCard(){
+    private void addNewCard(AudioPosts audioPosts){
 
         RecordCard card = null;
-        for(int i = 0; i < posts.size(); i++)
-        {
             card = new RecordCard();
 
-            card.setCreatorName(posts.get(i).name);
+            card.setCreatorName(audioPosts.name);
 
-            card.setPublishDate(posts.get(i).date.toString());
+            card.setPublishDate(audioPosts.date.toString());
 
-            card.setRecordUrl(posts.get(i).url);
+            card.setRecordUrl(audioPosts.url);
             cards.add(card);
-
-        }
-
         cardsAdapter.notifyDataSetChanged();
     }
 }
