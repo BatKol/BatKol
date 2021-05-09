@@ -75,26 +75,13 @@ public class Main_flow extends AppCompatActivity{
 
     }
     private void nextPost(){
-        if (postNumberIndex<cards.size()) {
             cards_visible.clear();
+            recyclerView.removeAllViewsInLayout();
+
             cards_visible.add(cards.get(postNumberIndex));
             cardsAdapter.notifyDataSetChanged();
             postNumberIndex++;
-        }
 
-//        myFlow.removeAllViews();
-//        Log.d("numberofpost", String.valueOf(recyclerView.getChildCount()));
-//
-////        recyclerView.setVisibility(View.VISIBLE);
-//        if(recyclerView.getChildCount() != 0) {
-//            View tempview = recyclerView.getChildAt(postNumberIndex++);
-//            recyclerView.removeView(tempview);
-//            if(tempview!= null) {
-//                myFlow.addView(tempview);
-//            }
-//            else
-//                postNumberIndex--;
-//        }
 
     }
 
@@ -178,5 +165,12 @@ public class Main_flow extends AppCompatActivity{
         overridePendingTransition(0, 0);
         startActivity(getIntent());
         overridePendingTransition(0, 0);
+    }
+
+    public boolean isCurrentListViewItemVisible(int position) {
+        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        int first = layoutManager.findFirstVisibleItemPosition();
+        int last = layoutManager.findLastVisibleItemPosition();
+        return first <= position && position <= last;
     }
 }

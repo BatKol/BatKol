@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +27,8 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
     private LayoutInflater layoutInflater;
     private Context currentActivity;
     private List<RecordCard> data;
+    private static MediaPlayer current_recordPlayer;
+
 
 
     public RecordList_adapter(Context context, List<RecordCard> data)
@@ -43,7 +46,6 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         return new ViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i)
     {
@@ -56,8 +58,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
 
         viewHolder.getCreator().setText(creator);
         viewHolder.getPublishDate().setText(Date);
-
-        fetchRecord(viewHolder, viewHolder.getMediaPlayer(), recordUrl);
+        fetchRecord(viewHolder, recordUrl);
 
 
 /*        viewHolder.GetmyView().setOnClickListener(new View.OnClickListener()
@@ -82,7 +83,6 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         private TextView tv_creatorName, tv_datePublish, tv_time, tv_duration;
         private Button btn_play;
         private View myView;
-        MediaPlayer recordPlayer;
         private SeekBar seekBarTime;
 
         public View GetmyView()
@@ -115,98 +115,133 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
 
         public Button getBtn_play() { return btn_play; }
 
-        public MediaPlayer getMediaPlayer(){ return recordPlayer; };
-
 
         public SeekBar getSeekBarTime() { return seekBarTime; }
     }
-
-    public void initPlayer(ViewHolder view, MediaPlayer recordPlayer, String url)
+    public void StopRecord()
     {
-
-
-        recordPlayer = MediaPlayer.create(currentActivity, Uri.parse(url));
-        
-        recordPlayer.setLooping(false);
-        recordPlayer.seekTo(0);
-        recordPlayer.setVolume(0.5f, 0.5f);
-
-        setPlayListener(view.getBtn_play(), recordPlayer);
-
-        String duration = AlgorithmsLibrary.millisecondsToString(recordPlayer.getDuration());
-        view.getTv_duration().setText(duration);
-
-        view.getSeekBarTime().setMax(recordPlayer.getDuration());
-        MediaPlayer record = recordPlayer;
-        //record.start();
-
-        view.getSeekBarTime().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        if (current_recordPlayer != null)
         {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean isFromUser)
-            {
-                if(isFromUser)
-                {
-                    record.seekTo(progress);
-                    seekBar.setProgress(progress);
-                }
-            }
+            current_recordPlayer.stop();
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            //current_recordPlayer.release();
 
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (record != null) {
-                    if(record.isPlaying()) {
-                        try {
-                            final double current = record.getCurrentPosition();
-                            final String elapsedTime = AlgorithmsLibrary.millisecondsToString((int) current);
-
-                            ((Activity)currentActivity).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    view.getTv_time().setText(elapsedTime);
-                                    view.getSeekBarTime().setProgress((int) current);
-                                }
-                            });
-
-                            Thread.sleep(1000);
-                        }catch (InterruptedException e) {}
-                    }
-                }
-            }
-        }).start();
+            current_recordPlayer = null;
+        }
     }
 
-    public void setPlayListener(Button play, MediaPlayer recordPlayer){
-        if(recordPlayer != null)
+    public void initPlayer(ViewHolder view, String url)
+    {
+
+        StopRecord();
+        try
+        {
+            MediaPlayer recordPlayer = MediaPlayer.create(currentActivity, Uri.parse(url));
+
+            if (current_recordPlayer != recordPlayer)
+            {
+
+                current_recordPlayer = recordPlayer;
+
+
+                current_recordPlayer.setLooping(false);
+                current_recordPlayer.seekTo(0);
+                current_recordPlayer.setVolume(0.5f, 0.5f);
+
+                setPlayListener(view.getBtn_play());
+
+                String duration = AlgorithmsLibrary.millisecondsToString(current_recordPlayer.getDuration());
+                view.getTv_duration().setText(duration);
+
+                view.getSeekBarTime().setMax(current_recordPlayer.getDuration());
+                current_recordPlayer.start();
+                view.getBtn_play().setBackgroundResource(R.drawable.ic_pause);
+
+
+                view.getSeekBarTime().setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+                {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean isFromUser)
+                    {
+                        if (isFromUser)
+                        {
+                            current_recordPlayer.seekTo(progress);
+                            seekBar.setProgress(progress);
+                        }
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar)
+                    {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar)
+                    {
+
+                    }
+                });
+
+
+                new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        while (current_recordPlayer != null)
+                        {
+                            if (current_recordPlayer != null && current_recordPlayer.isPlaying())
+                            {
+                                try
+                                {
+                                    final double current = current_recordPlayer.getCurrentPosition();
+                                    final String elapsedTime = AlgorithmsLibrary.millisecondsToString((int) current);
+
+                                    ((Activity) currentActivity).runOnUiThread(new Runnable()
+                                    {
+                                        @Override
+                                        public void run()
+                                        {
+                                            view.getTv_time().setText(elapsedTime);
+                                            view.getSeekBarTime().setProgress((int) current);
+                                        }
+                                    });
+
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e)
+                                {
+                                }
+                            }
+                        }
+                    }
+                }).start();
+            }
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            Toast.makeText(currentActivity, "Couldnot get record",Toast.LENGTH_LONG);
+        }
+    }
+
+    public void setPlayListener(Button play){
+        if(current_recordPlayer != null)
         {
             play.setOnClickListener(new View.OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    if(recordPlayer.isPlaying())
+                    if(current_recordPlayer.isPlaying())
                     {
                         // is playing
-                        recordPlayer.pause();
+                        current_recordPlayer.pause();
                         play.setBackgroundResource(R.drawable.ic_play);
                     }
                     else
                     {
                         // on pause
-                        recordPlayer.start();
+                        current_recordPlayer.start();
                         play.setBackgroundResource(R.drawable.ic_pause);
                     }
                 }
@@ -216,9 +251,9 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
     }
 
 
-    public void fetchRecord(ViewHolder view, MediaPlayer recordPlayer, String url){
+    public void fetchRecord(ViewHolder view, String url){
         // call db to fetch record
-        initPlayer(view, recordPlayer, url);
+        initPlayer(view, url);
     }
 
 

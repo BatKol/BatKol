@@ -48,6 +48,7 @@ public class speechToText extends AppCompatActivity {
             checkPermission();
         }
 
+
         editText = findViewById(R.id.text);
         button = findViewById(R.id.button2);
 
@@ -109,7 +110,7 @@ public class speechToText extends AppCompatActivity {
 
                 ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 editText.setText(data.get(0));
-                System.out.println(data.get(0));
+                System.out.println(data);
             }
 
             @Override
@@ -129,7 +130,6 @@ public class speechToText extends AppCompatActivity {
 
         button.setOnClickListener((v)->
         {
-
                 if (!record)
                 {
                     record = true;
@@ -141,13 +141,9 @@ public class speechToText extends AppCompatActivity {
                     speechRecognizer.stopListening();
 
                 }
-
-
         });
 
     }
-
-
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
