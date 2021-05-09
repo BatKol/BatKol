@@ -2,18 +2,27 @@ package com.example.batkol;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,12 +34,18 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import models.RecordCard;
+import utils.AlgorithmsLibrary;
 import utils.RecordList_adapter;
 
 public class Main_flow extends AppCompatActivity{
+    public static final Integer RecordAudioRequestCode = 1;
+    private SpeechRecognizer speechRecognizer;
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
@@ -49,6 +64,15 @@ public class Main_flow extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_flow);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        {
+            checkPermission();
+        }
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechRecognizer.setRecognitionListener(new BatKolRconizer(this::wordProcessing));
         audio_posts = findViewById(R.id.list_item);
         searchBT = findViewById(R.id.search_btn);
         newRecordBT = findViewById(R.id.record_btn);
@@ -67,7 +91,21 @@ public class Main_flow extends AppCompatActivity{
         initRecyclerAdapter();
 
         first10Posts();
-        TestButton.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, speechToText.class)));
+        TestButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    System.out.println("hhh");
+                    speechRecognizer.stopListening();
+                }
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+//                    TestButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                    speechRecognizer.startListening(speechRecognizerIntent);
+                }
+                return false;
+            }
+        });
+//        TestButton.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, speechToText.class)));
         newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
         searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, SearchPosts.class)));
         UPbutton.setOnClickListener(v->{nextPost();});
@@ -178,5 +216,36 @@ public class Main_flow extends AppCompatActivity{
         overridePendingTransition(0, 0);
         startActivity(getIntent());
         overridePendingTransition(0, 0);
+    }
+    private void wordProcessing(String s){
+        System.out.println(s);
+        ArrayList<String> listS = new ArrayList<String>(Arrays.asList(s.split(" ")));
+        if(AlgorithmsLibrary.stringInArray(listS,"search")){
+            System.out.println("joke on liad");
+            startActivity(new Intent(Main_flow.this, SearchPosts.class));
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"record")){
+            startActivity(new Intent(Main_flow.this, newRecordActivity.class));
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"help")){
+            System.out.println("help sound...");
+        }
+        else
+            System.out.println("nothing found");
+
+
+    }
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RecordAudioRequestCode && grantResults.length > 0 ){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                Toast.makeText(this,"Permission Granted",Toast.LENGTH_LONG).show();
+        }
     }
 }
