@@ -2,12 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.batkol">
 
-
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+
+    <queries>
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -17,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BatKol"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SearchPosts"></activity>
+        <activity android:name=".soundpoolTest"></activity>
+        <activity android:name=".SearchPosts" />
         <activity android:name=".TestElastic" />
 
         <uses-library
@@ -31,7 +36,6 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
-
         <activity android:name=".BatKolHomeActivity" />
         <activity android:name=".Main_flow" />
         <activity
@@ -42,8 +46,7 @@
         <activity android:name=".LoginOTP" />
         <activity
             android:name=".speechToText"
-            android:label="@string/title_activity_speech_to_text" >
-        </activity>
+            android:label="@string/title_activity_speech_to_text"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -62,11 +65,5 @@
             android:theme="@style/Theme.BatKol.NoActionBar">
         </activity>
     </application>
-    <queries>
-        <intent>
-            <action android:name="android.speech.RecognitionService" />
-        </intent>
-    </queries>
-
 
 </manifest>

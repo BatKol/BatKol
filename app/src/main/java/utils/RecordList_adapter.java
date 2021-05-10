@@ -3,6 +3,7 @@ package utils;
 import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +29,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
     private Context currentActivity;
     private List<RecordCard> data;
     private static MediaPlayer current_recordPlayer;
-
+    private static PlaybackParams params = new PlaybackParams();
 
 
     public RecordList_adapter(Context context, List<RecordCard> data)
@@ -55,20 +56,11 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         String creator = c.getCreatorName();
         String Date = c.getPublishDate().toString();
         String recordUrl = c.getRecordUrl();
+        float[] effect = c.getEffect();
 
         viewHolder.getCreator().setText(creator);
         viewHolder.getPublishDate().setText(Date);
-        fetchRecord(viewHolder, recordUrl);
-
-
-/*        viewHolder.GetmyView().setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-
-            }
-        });*/
+        fetchRecord(viewHolder, recordUrl, effect);
     }
 
     @Override
@@ -128,7 +120,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
     }
 
 
-    public void initPlayer(ViewHolder view, String url)
+    public void initPlayer(ViewHolder view, String url, float[] effect)
     {
 
         StopRecord();
@@ -140,11 +132,12 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
             {
 
                 current_recordPlayer = recordPlayer;
-
-
                 current_recordPlayer.setLooping(false);
                 current_recordPlayer.seekTo(0);
-                current_recordPlayer.setVolume(0.5f, 0.5f);
+                current_recordPlayer.setVolume(0.6f, 0.6f);
+                params.setPitch(effect[0]); // pitch
+                params.setSpeed(effect[1]); // speed
+                current_recordPlayer.setPlaybackParams(params);
 
                 setPlayListener(view.getBtn_play());
 
@@ -250,9 +243,9 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
     }
 
 
-    public void fetchRecord(ViewHolder view, String url){
+    public void fetchRecord(ViewHolder view, String url, float[] effect){
         // call db to fetch record
-        initPlayer(view, url);
+        initPlayer(view, url, effect);
     }
 
 

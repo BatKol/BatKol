@@ -184,6 +184,10 @@ public class Main_flow extends AppCompatActivity{
             card.setCreatorName(posts.get(i).name);
             card.setPublishDate(posts.get(i).date.toString());
             card.setRecordUrl(posts.get(i).url);
+            float[] effect = new float[2];
+            effect[0] = posts.get(i).record_pitch;
+            effect[1] = posts.get(i).record_speed;
+            card.setEffect(effect);
             cards.add(card);
 
         }

@@ -7,11 +7,13 @@ public class RecordCard
     private String publishDate;
     private String recordUrl;
     private String creatorName;
+    private float[] effect;
 
     public RecordCard(){}
 
-    public RecordCard(String publishDate, String recordUrl, String creatorName)
+    public RecordCard(String publishDate, String recordUrl, String creatorName, float[] effc)
     {
+        this.effect = effc;
         this.publishDate = publishDate;
         this.recordUrl = recordUrl;
         this.creatorName = creatorName;
@@ -46,4 +48,8 @@ public class RecordCard
     {
         this.creatorName = userName;
     }
+
+    public float[] getEffect() { return effect; }
+
+    public void setEffect(float[] eff) { this.effect = eff; }
 }
