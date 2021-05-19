@@ -245,4 +245,10 @@ public class Main_flow extends AppCompatActivity{
                 Toast.makeText(this,"Permission Granted",Toast.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cardsAdapter.StopRecord();
+    }
 }

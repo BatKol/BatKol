@@ -8,13 +8,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,13 +36,17 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 
 import models.RecordCard;
+import utils.AlgorithmsLibrary;
 import utils.ElasticRestClient;
 import cz.msebera.android.httpclient.Header;
 import utils.RecordList_adapter;
 
 public class SearchPosts extends AppCompatActivity {
+    public static final Integer RecordAudioRequestCode = 1;
+    private SpeechRecognizer speechRecognizer;
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
@@ -55,6 +62,15 @@ public class SearchPosts extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_posts);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED)
+        {
+            checkPermission();
+        }
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechRecognizer.setRecognitionListener(new BatKolRconizer(this::wordProcessing));
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
@@ -162,5 +178,39 @@ public class SearchPosts extends AppCompatActivity {
             card.setRecordUrl(audioPosts.url);
             cards.add(card);
         cardsAdapter.notifyDataSetChanged();
+    }
+    private void wordProcessing(String s){
+        System.out.println(s);
+        ArrayList<String> listS = new ArrayList<String>(Arrays.asList(s.split(" ")));
+        if(AlgorithmsLibrary.stringInArray(listS,"search")){
+            String exp = AlgorithmsLibrary.parsStringafter(listS,"search");
+            startshearch(exp);
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"record")){
+            //..
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"help")){
+            System.out.println("help sound...");
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"back")){
+            finish();
+        }
+        else
+            System.out.println("nothing found");
+
+
+    }
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RecordAudioRequestCode && grantResults.length > 0 ){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                Toast.makeText(this,"Permission Granted",Toast.LENGTH_LONG).show();
+        }
     }
 }
