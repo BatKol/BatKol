@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -52,7 +53,7 @@ public class Main_flow extends AppCompatActivity{
     FirebaseAuth mAuth;
     ArrayList<AudioPosts>  posts = new ArrayList<>();
     ListView audio_posts;
-    Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton,TestButton;
+    Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton,TestButton, btnlogout;
     DocumentSnapshot lastVisible;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
@@ -61,6 +62,7 @@ public class Main_flow extends AppCompatActivity{
     private int postNumberIndex=0;
 
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,45 +71,50 @@ public class Main_flow extends AppCompatActivity{
         {
             checkPermission();
         }
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        speechRecognizer.setRecognitionListener(new BatKolRconizer(this::wordProcessing));
         audio_posts = findViewById(R.id.list_item);
         searchBT = findViewById(R.id.search_btn);
         newRecordBT = findViewById(R.id.record_btn);
         profileBT = findViewById(R.id.myprofile_btn);
         UPbutton = findViewById(R.id.UPbutton);
         TestButton=findViewById(R.id.TESTbutton);
+        btnlogout=findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
         cards = new ArrayList<RecordCard>();
         cards_visible = new ArrayList<RecordCard>();
+        String user_type = getIntent().getStringExtra("user_type");
+
+        if(user_type.equals("guest")) {
+            newRecordBT.setVisibility(View.GONE); ;
+            profileBT.setVisibility(View.GONE);
+            TestButton.setVisibility(View.GONE);
+            searchBT.setVisibility(View.GONE);
+        }
+        else {
+            initTestBtn();
+            newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
+            searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, SearchPosts.class)));
+            // search button init should be here
+        }
+
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         initRecyclerAdapter();
 
         first10Posts();
-        TestButton.setOnTouchListener(new View.OnTouchListener() {
+
+
+        btnlogout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
-                    System.out.println("hhh");
-                    speechRecognizer.stopListening();
-                }
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-//                    TestButton.setImageResource(R.drawable.ic_mic_black_24dp);
-                    speechRecognizer.startListening(speechRecognizerIntent);
-                }
-                return false;
+            public void onClick(View view) {
+                mAuth.signOut();
+                finish();
             }
         });
+
 //        TestButton.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, speechToText.class)));
-        newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
-        searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, SearchPosts.class)));
         UPbutton.setOnClickListener(v->{nextPost();});
 
 
@@ -150,7 +157,31 @@ public class Main_flow extends AppCompatActivity{
                 });
 
 
-    }private void first10Posts(){
+    }
+    private void initTestBtn()
+    {
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechRecognizer.setRecognitionListener(new BatKolRconizer(this::wordProcessing));
+        TestButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    speechRecognizer.stopListening();
+                }
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+//                    TestButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                    speechRecognizer.startListening(speechRecognizerIntent);
+                }
+                return false;
+            }
+        });
+
+    }
+
+    private void first10Posts(){
         db.collection("Posts").limit(10)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
