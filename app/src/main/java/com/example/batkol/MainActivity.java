@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     EditText emailId, password;
     Button btnLogin;
     Button btnRegister;
+    Button btnGuest;
     FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
 
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         password = findViewById(R.id.ExistUserPassword);
         btnLogin = findViewById(R.id.Login);
         btnRegister = findViewById(R.id.buttonRegister);
-
+        btnGuest = findViewById(R.id.guest);
 
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -78,19 +79,26 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                             else{
-                                startActivity(new  Intent(MainActivity.this,Main_flow.class));
+                                Intent intent = new Intent(MainActivity.this, Main_flow.class);
+                                intent.putExtra("user_type", "logged");
+                                startActivity(intent);
                             }
                         }
                     });
                 }
                 else{
                     Toast.makeText(MainActivity.this,"משתמש שגוי", Toast.LENGTH_SHORT).show();
-
                 }
             }
+        });
 
-
-
+        btnGuest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Main_flow.class);
+                intent.putExtra("user_type", "guest");
+                startActivity(intent);
+            }
         });
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -104,8 +112,9 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         if(mFirebaseAuth.getCurrentUser()!=null){
-            startActivity(new  Intent(MainActivity.this,Main_flow.class));
-
+            Intent intent = new Intent(MainActivity.this, Main_flow.class);
+            intent.putExtra("user_type", "logged");
+            startActivity(intent);
         }
     }
 

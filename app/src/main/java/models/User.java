@@ -1,4 +1,4 @@
-package com.example.batkol;
+package models;
 
 public class User {
     String uid,phoneNumber,nameDisplay,email;

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".newRecordActivity">
 
     <TextView
@@ -37,9 +38,10 @@
         android:text="play/stop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/recordLabel"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/recordLabel"
         app:layout_constraintTop_toBottomOf="@+id/recordLabel"
-        app:layout_constraintVertical_bias="0.06" />
+        app:layout_constraintVertical_bias="0.29" />
 
     <Button
         android:id="@+id/button_upload"
@@ -48,10 +50,10 @@
         android:text="upload"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/button_play"
-        app:layout_constraintHorizontal_bias="0.458"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="@+id/button_play"
         app:layout_constraintTop_toBottomOf="@+id/button_play"
-        app:layout_constraintVertical_bias="0.093" />
+        app:layout_constraintVertical_bias="0.206" />
 
     <Button
         android:id="@+id/button_delete"
@@ -88,4 +90,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_delete" />
+
+    <Spinner
+        android:id="@+id/freqSpinner"
+        android:background="@drawable/border"
+        android:layout_width="119dp"
+        android:layout_height="52dp"
+        android:backgroundTint="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/button_play"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recordLabel"
+        app:layout_constraintVertical_bias="0.637" />
+
+    <Button
+        android:id="@+id/speechhelper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="hold to talk"
+        app:layout_constraintBottom_toBottomOf="@+id/button_play"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.709"
+        app:layout_constraintStart_toEndOf="@+id/button_play"
+        app:layout_constraintTop_toTopOf="@+id/button_play"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

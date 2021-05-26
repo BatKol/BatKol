@@ -20,4 +20,25 @@
     <string name="hello_world">Hello Square World!</string>
     <string name="search">search</string>
 
+
+    <string-array name="Effects">
+        <item>Normal</item>
+        <item>Slow Motion</item>
+        <item>Amichai</item>
+        <item>noName</item>
+        <item>youtuber</item>
+        <item>chipmunk</item>
+
+    </string-array>
+<!--  same order as the Effect list-->
+    <string-array name="effectValues">
+        <item>1.0f,1.0f</item>
+        <item>1.0f,0.55f</item>
+        <item>0.8f,1.1f</item>
+        <item>1.55f,1.0f</item>
+        <item>3.5f,1.2f</item>
+        <item>2.16f,1.95f</item>
+
+    </string-array>
+
 </resources>

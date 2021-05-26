@@ -46,4 +46,25 @@ public class AlgorithmsLibrary
         }
         return false;
     }
+    public static String parsStringafter(ArrayList<String> ls,String s){
+        boolean flag = true;
+        StringBuilder ans = new StringBuilder();
+        s = s.replaceAll(" ","");
+        for (int i = 0; i < ls.size();i++) {
+            String word = ls.get(i);
+            if (flag) {
+                System.out.println(s + " " + word + " " + s.equals(word));
+                if (s.equals(word))
+                    flag = false;
+            }
+            else if (i<ls.size()-1)
+                ans.append(word).append(" ");
+            else
+                ans.append(word);
+
+
+        }
+        return ans.toString();
+
+    }
 }

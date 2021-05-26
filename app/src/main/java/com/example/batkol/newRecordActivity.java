@@ -11,17 +11,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.PlaybackParams;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,13 +71,16 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
     boolean playing = false, recording = false,canUpload = false;
     String recordNameS = null;
     FirebaseStorage storage = FirebaseStorage.getInstance();
-    private MediaPlayer   player = null;
+    private Spinner freqSpinner;
+    private MediaPlayer player = null;
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     Boolean finishUpload = false;
-    STT stt;
-    ArrayList<String> datastt= new ArrayList<>();
+    ArrayAdapter<String> effectAdapter;
+    private SpeechRecognizer speechRecognizer;
+    Button speechButton;
+    boolean canPlay = false;
 
 
     @Override
@@ -88,6 +96,8 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         btn_play = (Button)findViewById(R.id.button_play);
         btn_delete = (Button)findViewById(R.id.button_delete);
         description = findViewById(R.id.description_text);
+        freqSpinner = findViewById(R.id.freqSpinner);
+        speechButton = findViewById(R.id.speechhelper);
 
         btn_delete.setVisibility(View.INVISIBLE);
         btn_upload.setVisibility(View.INVISIBLE);
@@ -97,6 +107,13 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
 
+
+        String[] effectsList = getResources().getStringArray(R.array.Effects);
+        effectAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, effectsList);
+        effectAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        freqSpinner.setAdapter(effectAdapter);
+        freqSpinner.setVisibility(View.GONE);
+
         btn_delete.setOnClickListener(this);
         btn_upload.setOnClickListener(this);
         btn_play.setOnClickListener(this);
@@ -105,7 +122,28 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         {
             checkPermission();
         }
-        stt= new STT(this,this,datastt,new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH));
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechRecognizer.setRecognitionListener(new BatKolRconizer(this::wordProcessing));
+        speechButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    if(playing)
+                        stopPlay();
+                    if (recording)
+                        stopRecord();
+                    speechRecognizer.stopListening();
+                }
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+//                    TestButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                    speechRecognizer.startListening(speechRecognizerIntent);
+                }
+                return false;
+            }
+        });
 //        btn_record.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
 //            public boolean onTouch(View v, MotionEvent event) {
@@ -121,7 +159,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
 //            }
 //        });
     }
-
+;
     @Override
     public void onClick(View v) {
         if (v == btn_record){
@@ -192,7 +230,8 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
                     String dateF = pf.format(date);
                     //postID
                     String postID = AlgorithmsLibrary.hashMD5(userID+fileName+descrition+date);
-                    AudioPosts post = new AudioPosts(username,fileName,url,descrition,postID,userID,date);
+                    float[] effect = getRecordEffect();
+                    AudioPosts post = new AudioPosts(username,fileName,url,descrition,postID,userID,date, effect[0],effect[1]);
 
 
                     db.collection("Posts").document(postID)
@@ -227,10 +266,6 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
                                     Log.w("UploadTask", "Error writing document", e);
                                 }
                             });
-
-
-
-
                 }
             });
 
@@ -239,16 +274,27 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         }
 
     }
-    private void startPlaying() {
+    private void stopPlay(){
         if (playing){
             player.release();
             player = null;
             playing = false;
+        }
+    }
+
+    private void startPlaying() {
+        if (playing) {
+            stopPlay();
             return;
         }
         player = new MediaPlayer();
         try {
             player.setDataSource(recordNameS);
+            float[] effect = getRecordEffect();
+            PlaybackParams params = new PlaybackParams();
+            params.setPitch(effect[0]); // pitch
+            params.setSpeed(effect[1]); // speed
+            player.setPlaybackParams(params);
             player.prepare();
             player.start();
             playing = true;
@@ -261,22 +307,19 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         btn_delete.setVisibility(View.INVISIBLE);
         btn_upload.setVisibility(View.INVISIBLE);
         btn_play.setVisibility(View.INVISIBLE);
+        freqSpinner.setVisibility(View.GONE);
         btn_record.setVisibility(View.VISIBLE);
+        canPlay = false;
     }
 
     private void stopRecord() {
         if (!recording){
             return;
         }
-       recorder.stop();
+        recorder.stop();
         recorder.release();
-        stt.StoptSTT(()->{
-            System.out.println(Arrays.toString(new ArrayList[]{datastt}));
-            System.out.println("ready to send");
-            Log.e("liads", "ready to send liad");
+        freqSpinner.setVisibility(View.VISIBLE);
 
-            //... send to elastic....
-        });
 
         recorder = null;
         recording = false;
@@ -291,6 +334,7 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
 
     }
     private void startRecording() {
+        canPlay = true;
         recordNameS = getExternalCacheDir().getAbsolutePath();
         recordNameS += "/audiorecordtest.3gp";
         recorder = new MediaRecorder();
@@ -316,15 +360,85 @@ public class newRecordActivity extends AppCompatActivity implements View.OnClick
         }
         recording = true;
         recorder.start();
-        stt.StartSTT();
 
         tv_recordLabel.setText("Tap to Stop");
         btn_record.setText("Tap to Stop");
     }
 
+    // return the desired effect by getting the position from the spinner and fetch the settings
+    // for record pitch and speed
+    private float[] getRecordEffect()
+    {
+        float[] pitch_speed = new float[2];
+        //default values
+        pitch_speed[0] = 1.0f;
+        pitch_speed[1] = 1.0f;
+
+        try
+        {
+            int spinner_pos = freqSpinner.getSelectedItemPosition();
+            String[] effect_values = getResources().getStringArray(R.array.effectValues);
+            String[] effectSettings = effect_values[spinner_pos].split(",");
+            pitch_speed[0] = Float.parseFloat(effectSettings[0]);
+            pitch_speed[1] = Float.parseFloat(effectSettings[1]);
+
+        }catch (Exception e)
+        {
+            Log.d("Error", e.getMessage());
+        }
+
+        return pitch_speed;
+    }
+
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        finish();
+    }
+
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
+        }
+    }
+    private void wordProcessing(String s){
+        System.out.println(s);
+        ArrayList<String> listS = new ArrayList<String>(Arrays.asList(s.split(" ")));
+        if(AlgorithmsLibrary.stringInArray(listS,"record")){
+            if (!recording){
+                startRecording();
+            }
+
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"upload")){
+            uploadRecord();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"play")){
+            if (canPlay)
+                startPlaying();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"delete")){
+            deleteRecord();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"help")){
+            System.out.println("help sound...");
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"back")){
+            finish();
+        }
+        else
+            System.out.println("nothing found");
+
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == RecordAudioRequestCode && grantResults.length > 0 ){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                Toast.makeText(this,"Permission Granted",Toast.LENGTH_LONG).show();
         }
     }
 }
