@@ -55,6 +55,7 @@ public class Main_flow extends AppCompatActivity{
     ListView audio_posts;
     Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton,TestButton, btnlogout;
     DocumentSnapshot lastVisible;
+    String show;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
     private ArrayList<RecordCard> cards_visible;
@@ -95,7 +96,8 @@ public class Main_flow extends AppCompatActivity{
         else {
             initTestBtn();
             newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
-            searchBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, SearchPosts.class)));
+            searchBT.setOnClickListener(v ->startActivity(new Intent(Main_flow.this, SearchPosts.class)));
+            profileBT.setOnClickListener(v->startActivity(new Intent(Main_flow.this, ProfileActivity.class)));
             // search button init should be here
         }
 
@@ -258,6 +260,19 @@ public class Main_flow extends AppCompatActivity{
         }
         else if(AlgorithmsLibrary.stringInArray(listS,"help")){
             System.out.println("help sound...");
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"show") || AlgorithmsLibrary.stringInArray(listS,"שואו")){
+            show=posts.get(postNumberIndex).getUserID();
+            Intent intent = new Intent(Main_flow.this, ProfileActivity.class);
+            Bundle b = new Bundle();
+            System.out.println("plplpl "+ show);
+            b.putString("uid",show); //Your id
+            intent.putExtras(b); //Put your id to your next Intent
+            startActivity(intent);
+            finish();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"profile") || AlgorithmsLibrary.stringInArray(listS,"פרופיל")){
+            startActivity(new Intent(Main_flow.this, ProfileActivity.class));
         }
         else
             System.out.println("nothing found");

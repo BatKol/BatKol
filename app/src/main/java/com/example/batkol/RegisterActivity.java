@@ -120,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void updateUserInformation(FirebaseUser firebaseUser) {
-        userObject = new User(firebaseUser.getUid(),userName.getText().toString(),userPhone.getText().toString(), userEmail.getText().toString());
+        userObject = new User(firebaseUser.getUid(),userPhone.getText().toString(),userName.getText().toString(), userEmail.getText().toString());
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(userName.getText().toString())
