@@ -30,7 +30,7 @@
         <item>chipmunk</item>
 
     </string-array>
-<!--  same order as the Effect list-->
+    <!--  same order as the Effect list-->
     <string-array name="effectValues">
         <item>1.0f,1.0f</item>
         <item>1.0f,0.55f</item>
@@ -40,5 +40,9 @@
         <item>2.16f,1.95f</item>
 
     </string-array>
+    <string name="title_activity_main2">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 </resources>
