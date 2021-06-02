@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -30,6 +31,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText userName, userEmail, userPassword,userPhone,id;
     private Button register;
     private FirebaseAuth mAuth;
+    private CheckBox accessibilityBox;
+
     FirebaseFirestore db;
     User userObject;
 
@@ -45,8 +48,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
-
+        accessibilityBox = findViewById(R.id.AccessibilityBox);
 
     }
 
@@ -120,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void updateUserInformation(FirebaseUser firebaseUser) {
-        userObject = new User(firebaseUser.getUid(),userPhone.getText().toString(),userName.getText().toString(), userEmail.getText().toString());
+        userObject = new User(firebaseUser.getUid(),userPhone.getText().toString(),userName.getText().toString(), userEmail.getText().toString(), accessibilityBox.isChecked());
 
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(userName.getText().toString())
@@ -149,7 +151,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         Log.w("TAG", "Error writing document", e);
                     }
                 });
-
     }
     @Override
     public void onStart(){

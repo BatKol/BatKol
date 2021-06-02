@@ -90,7 +90,8 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/ic_play"
-                android:textColor="#F4EAEA" />
+                android:textColor="#F4EAEA"
+                />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
