@@ -262,7 +262,11 @@ public class Main_flow extends AppCompatActivity{
             System.out.println("help sound...");
         }
         else if(AlgorithmsLibrary.stringInArray(listS,"show") || AlgorithmsLibrary.stringInArray(listS,"שואו")){
-            show=posts.get(postNumberIndex).getUserID();
+            if(postNumberIndex>0){
+                show=posts.get(postNumberIndex-1).getUserID();
+            }
+            else
+                show=posts.get(postNumberIndex).getUserID();
             Intent intent = new Intent(Main_flow.this, ProfileActivity.class);
             Bundle b = new Bundle();
             System.out.println("plplpl "+ show);

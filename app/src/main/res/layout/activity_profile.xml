@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:gravity="center"
-            android:text="israel israeli"
+            android:text="Loading..."
             android:textSize="30sp" />
 
         <TextView
