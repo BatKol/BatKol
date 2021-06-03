@@ -44,6 +44,7 @@ import java.util.Map;
 import models.RecordCard;
 import utils.AlgorithmsLibrary;
 import utils.RecordList_adapter;
+import utils.RecordList_adapter_old;
 
 public class Main_flow extends AppCompatActivity{
     public static final Integer RecordAudioRequestCode = 1;
@@ -59,7 +60,8 @@ public class Main_flow extends AppCompatActivity{
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
     private ArrayList<RecordCard> cards_visible;
-    private RecordList_adapter cardsAdapter;
+    private RecordList_adapter_old cardsAdapter;
+    // private RecordList_adapter cardsAdapter;
     private int postNumberIndex=0;
 
 
@@ -100,7 +102,6 @@ public class Main_flow extends AppCompatActivity{
             profileBT.setOnClickListener(v->startActivity(new Intent(Main_flow.this, ProfileActivity.class)));
             // search button init should be here
         }
-
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         initRecyclerAdapter();
@@ -233,7 +234,8 @@ public class Main_flow extends AppCompatActivity{
     // print the cards arrays on the current activity recyclerView
     private void initRecyclerAdapter() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        cardsAdapter = new RecordList_adapter(this,cards_visible);
+        cardsAdapter = new RecordList_adapter_old(this,cards_visible);
+        //        cardsAdapter = new RecordList_adapter(this,cards_visible);
         recyclerView.setAdapter(cardsAdapter);
 
     }
@@ -296,10 +298,10 @@ public class Main_flow extends AppCompatActivity{
                 Toast.makeText(this,"Permission Granted",Toast.LENGTH_LONG).show();
         }
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        cardsAdapter.StopRecord();
-    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        cardsAdapter.StopRecord();
+//    }
 }
