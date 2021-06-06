@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -37,24 +39,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import models.RecordCard;
 import utils.AlgorithmsLibrary;
 import utils.ElasticRestClient;
 import cz.msebera.android.httpclient.Header;
 import utils.RecordList_adapter;
+import utils.RecordList_adapter_old;
 
 public class SearchPosts extends AppCompatActivity {
     public static final Integer RecordAudioRequestCode = 1;
+    int postNumberIndex = 0;
     private SpeechRecognizer speechRecognizer;
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
-    Button search;
+    Button search,TestButton;
     EditText searchTags;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
-    private RecordList_adapter cardsAdapter;
+    private ArrayList<RecordCard> cards_visible;
+    private RecordList_adapter_old cardsAdapter;
     ArrayList<AudioPosts> posts = new ArrayList<>();
     HashMap<String,Boolean> once = new HashMap<>();
 
@@ -75,11 +81,25 @@ public class SearchPosts extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
         cards = new ArrayList<RecordCard>();
+        cards_visible = new ArrayList<RecordCard>();
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         search = findViewById(R.id.buttonsearch);
+        TestButton = findViewById(R.id.test);
         searchTags = findViewById(R.id.editTextsearch);
         recyclerView = findViewById(R.id.recyclerView2);
-
+        TestButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    speechRecognizer.stopListening();
+                }
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+//                    TestButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                    speechRecognizer.startListening(speechRecognizerIntent);
+                }
+                return false;
+            }
+        });
         search.setOnClickListener((v)->{
             if (!searchTags.getText().toString().equals("")){
                 startshearch(searchTags.getText().toString());
@@ -145,8 +165,9 @@ public class SearchPosts extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-//                    posts.add(document.toObject(AudioPosts.class));
-                    addNewCard(document.toObject(AudioPosts.class));
+                    posts.add(document.toObject(AudioPosts.class));
+                    assert document != null;
+                    addNewCard(Objects.requireNonNull(document.toObject(AudioPosts.class)));
                     if (document.exists()) {
                         Log.d("get-post", "DocumentSnapshot data: " + document.getData());
                     } else {
@@ -161,33 +182,57 @@ public class SearchPosts extends AppCompatActivity {
 
     private void initRecyclerAdapter() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        cardsAdapter = new RecordList_adapter(this,cards);
+        cardsAdapter = new RecordList_adapter_old(this,cards_visible);
         recyclerView.setAdapter(cardsAdapter);
 
     }
     // create new card from given snapshot of seller products
     private void addNewCard(AudioPosts audioPosts){
-
         RecordCard card = null;
-            card = new RecordCard();
-
-            card.setCreatorName(audioPosts.name);
-
-            card.setPublishDate(audioPosts.date.toString());
-
-            card.setRecordUrl(audioPosts.url);
-            cards.add(card);
+        card = new RecordCard();
+        card.setCreatorName(audioPosts.name);
+        card.setPublishDate(audioPosts.date.toString());
+        card.setRecordUrl(audioPosts.url);
+        float[] effect = new float[2];
+        effect[0] = audioPosts.record_pitch;
+        effect[1] = audioPosts.record_speed;
+        card.setEffect(effect);
+        cards.add(card);
         cardsAdapter.notifyDataSetChanged();
+        cards_visible.add(cards.get(0));
+    }
+    private void nextPost()
+    {
+        try {
+
+        cards_visible.clear();
+        recyclerView.removeAllViewsInLayout();
+
+        cards_visible.add(cards.get(postNumberIndex));
+
+        cardsAdapter.notifyDataSetChanged();
+
+        postNumberIndex++;
+
+        postNumberIndex = postNumberIndex % cards.size();
+
+        } catch (Exception e){
+            System.out.println(e.fillInStackTrace());
+        }
+
     }
     private void wordProcessing(String s){
         System.out.println(s);
         ArrayList<String> listS = new ArrayList<String>(Arrays.asList(s.split(" ")));
         if(AlgorithmsLibrary.stringInArray(listS,"search")){
+            cards.clear();
+            cards_visible.clear();
+            cardsAdapter.notifyDataSetChanged();
             String exp = AlgorithmsLibrary.parsStringafter(listS,"search");
             startshearch(exp);
         }
-        else if(AlgorithmsLibrary.stringInArray(listS,"record")){
-            //..
+        else if(AlgorithmsLibrary.stringInArray(listS,"next")){
+            nextPost();
         }
         else if(AlgorithmsLibrary.stringInArray(listS,"help")){
             System.out.println("help sound...");

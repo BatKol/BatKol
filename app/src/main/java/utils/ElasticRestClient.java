@@ -17,7 +17,7 @@ import cz.msebera.android.httpclient.entity.StringEntity;
 
 public class ElasticRestClient {
 
-    private static final String BASE_URL = "http://10.0.2.2:9200/" ;//"http://10.0.2.2:9200/"; //http://localhost:9200/
+    private static final String BASE_URL = "http://172.20.10.13:9200/" ;//"http://10.0.2.2:9200/"; //http://localhost:9200/
     private static final String CLASS_NAME = ElasticRestClient.class.getSimpleName();
 
     private static AsyncHttpClient client = new AsyncHttpClient();

@@ -54,7 +54,7 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         // bind the textview with data received
         RecordCard c = data.get(i);
         String creator = c.getCreatorName();
-        String Date = c.getPublishDate().toString();
+        String Date = c.getPublishDate();
         String recordUrl = c.getRecordUrl();
         float[] effect = c.getEffect();
 
@@ -127,10 +127,10 @@ public class RecordList_adapter extends RecyclerView.Adapter<RecordList_adapter.
         try
         {
             MediaPlayer recordPlayer = MediaPlayer.create(currentActivity, Uri.parse(url));
+            recordPlayer.start();
 
             if (current_recordPlayer != recordPlayer)
             {
-
                 current_recordPlayer = recordPlayer;
                 current_recordPlayer.setLooping(false);
                 current_recordPlayer.seekTo(0);
