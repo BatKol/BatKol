@@ -30,9 +30,11 @@ import android.widget.Toast;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import models.RecordCard;
 import utils.RecordList_adapter;
+import utils.RecordList_adapter_old;
 
 public class ProfileActivity extends AppCompatActivity {
     private AppBarLayout appBar;
@@ -45,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
     RecyclerView profile_posts;
     private ArrayList<RecordCard> cards = new ArrayList<RecordCard>();
 
-    private RecordList_adapter cardsAdapter;
+    private RecordList_adapter_old cardsAdapter;
     private static ArrayList<AudioPosts>  posts = new ArrayList<>();
 
 
@@ -64,6 +66,8 @@ public class ProfileActivity extends AppCompatActivity {
         profile_posts= findViewById(R.id.profile_posts);
         posts.clear();
 
+        fansNumbers.setText("Fans: "+String.valueOf( new Random().nextInt(61) +20));
+
         Bundle b = getIntent().getExtras();
         if(b != null)
             id = b.getString("uid");
@@ -78,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void initRecyclerAdapter() {
         profile_posts.setLayoutManager(new LinearLayoutManager(this));
-        cardsAdapter = new RecordList_adapter(this,cards);
+        cardsAdapter = new RecordList_adapter_old(this,cards);
         profile_posts.setAdapter(cardsAdapter);
 
     }
