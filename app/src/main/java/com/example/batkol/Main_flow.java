@@ -11,8 +11,10 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
@@ -41,6 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
 
 import models.RecordCard;
 import utils.AlgorithmsLibrary;
@@ -147,21 +150,32 @@ public class Main_flow extends AppCompatActivity{
     }
     private void nextPost()
     {
-            cards_visible.clear();
-            recyclerView.removeAllViewsInLayout();
+        // stoping record of current view
+        if( cardsAdapter.getPlayBtn() != null)
+        {
+            cardsAdapter.getPlayBtn().performClick();
+        }
+        cards_visible.clear();
+        recyclerView.removeAllViewsInLayout();
 
-            cards_visible.add(cards.get(postNumberIndex));
+        cards_visible.add(cards.get(postNumberIndex));
 
-            cardsAdapter.notifyDataSetChanged();
-            postNumberIndex++;
+        cardsAdapter.notifyDataSetChanged();
+
+        postNumberIndex++;
 
 
-            if (postNumberIndex>cards.size()-3)
-                add10Posts();
-            postNumberIndex = postNumberIndex % cards.size();
+        if (postNumberIndex>cards.size()-3)
+            add10Posts();
+        postNumberIndex = postNumberIndex % cards.size();
 
-            currentViewHolder= new RecordList_adapter_old.ViewHolder(recyclerView.getLayoutManager().findViewByPosition(postNumberIndex));
-            //currentViewHolder.getBtn_play().callOnClick();
+
+        if( cardsAdapter.getPlayBtn() != null)
+        {
+            cardsAdapter.getPlayBtn().performClick();
+        }
+        
+
     }
 
 
@@ -254,6 +268,7 @@ public class Main_flow extends AppCompatActivity{
         }
 
         cardsAdapter.notifyDataSetChanged();
+
     }
 
 
