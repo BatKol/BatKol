@@ -5,6 +5,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.PlaybackParams;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
     private LayoutInflater layoutInflater;
     private Context currentActivity;
     private List<RecordCard> data;
+    private static ViewHolder currentView;
     //private static PlaybackParams params = new PlaybackParams();
 
 
@@ -62,7 +64,9 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
 
         fetchRecord(viewHolder, viewHolder.getMediaPlayer(), recordUrl, effect);
 
+        currentView = viewHolder;
 
+        viewHolder.getBtn_play().performClick();
     }
 
     @Override
@@ -118,8 +122,6 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
 
     public void initPlayer(ViewHolder view, MediaPlayer recordPlayer, String url, float[] effect)
     {
-
-
         recordPlayer = MediaPlayer.create(currentActivity, Uri.parse(url));
 
         recordPlayer.setLooping(false);
@@ -198,6 +200,8 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
                 {
                     if(recordPlayer.isPlaying())
                     {
+                        Log.d("benClick", "onClick: paouse");
+
                         // is playing
                         recordPlayer.pause();
                         play.setBackgroundResource(R.drawable.ic_play);
@@ -205,6 +209,7 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
                     else
                     {
                         // on pause
+                        Log.d("benClick", "onClick: play");
                         recordPlayer.start();
                         play.setBackgroundResource(R.drawable.ic_pause);
                     }
@@ -212,8 +217,8 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
             });
         }
         recordPlayer.pause();
-
     }
+
 
 
     public void fetchRecord(ViewHolder view, MediaPlayer recordPlayer, String url,float[] effect){
@@ -221,5 +226,9 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
         initPlayer(view, recordPlayer, url,effect);
     }
 
-
+    public Button getPlayBtn()
+    {
+        if(currentView != null) return currentView.getBtn_play();
+        return null;
+    }
 }
