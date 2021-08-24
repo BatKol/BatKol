@@ -59,6 +59,7 @@ public class Main_flow extends AppCompatActivity{
     Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton,TestButton, btnlogout;
     DocumentSnapshot lastVisible;
     String show;
+    RecordList_adapter_old.ViewHolder currentViewHolder;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
     private ArrayList<RecordCard> cards_visible;
@@ -152,12 +153,15 @@ public class Main_flow extends AppCompatActivity{
             cards_visible.add(cards.get(postNumberIndex));
 
             cardsAdapter.notifyDataSetChanged();
-
             postNumberIndex++;
+
 
             if (postNumberIndex>cards.size()-3)
                 add10Posts();
             postNumberIndex = postNumberIndex % cards.size();
+
+            currentViewHolder= new RecordList_adapter_old.ViewHolder(recyclerView.getLayoutManager().findViewByPosition(postNumberIndex));
+            //currentViewHolder.getBtn_play().callOnClick();
     }
 
 
