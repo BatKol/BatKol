@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
-        android:theme="@style/Theme.BatKol.AppBarOverlay">
+        android:theme="@style/Theme.BatKol.AppBarOverlay"
+        >
 
         <TextView
             android:id="@+id/profile_name"

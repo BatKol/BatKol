@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -52,6 +53,7 @@ public class Main_flow extends AppCompatActivity{
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
+    TextToSpeech textToSpeech;
     ArrayList<AudioPosts>  posts = new ArrayList<>();
     ListView audio_posts;
     Button searchBT,newRecordBT,profileBT,DOWNbutton,UPbutton,TestButton, btnlogout;
@@ -74,13 +76,14 @@ public class Main_flow extends AppCompatActivity{
         {
             checkPermission();
         }
+        getSupportActionBar().hide();
         audio_posts = findViewById(R.id.list_item);
-        searchBT = findViewById(R.id.search_btn);
-        newRecordBT = findViewById(R.id.record_btn);
-        profileBT = findViewById(R.id.myprofile_btn);
+//        searchBT = findViewById(R.id.search_btn);
+//        newRecordBT = findViewById(R.id.record_btn);
+//        profileBT = findViewById(R.id.myprofile_btn);
         UPbutton = findViewById(R.id.UPbutton);
         TestButton=findViewById(R.id.TESTbutton);
-        btnlogout=findViewById(R.id.logout);
+//        btnlogout=findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -97,9 +100,9 @@ public class Main_flow extends AppCompatActivity{
         }
         else {
             initTestBtn();
-            newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
-            searchBT.setOnClickListener(v ->startActivity(new Intent(Main_flow.this, SearchPosts.class)));
-            profileBT.setOnClickListener(v->startActivity(new Intent(Main_flow.this, ProfileActivity.class)));
+//            newRecordBT.setOnClickListener(v -> startActivity(new Intent(Main_flow.this,newRecordActivity.class)));
+//            searchBT.setOnClickListener(v ->startActivity(new Intent(Main_flow.this, SearchPosts.class)));
+//            profileBT.setOnClickListener(v->startActivity(new Intent(Main_flow.this, ProfileActivity.class)));
             // search button init should be here
         }
 
@@ -108,14 +111,33 @@ public class Main_flow extends AppCompatActivity{
 
         first10Posts();
 
+        // speak to the user that is on search activity
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
 
-        btnlogout.setOnClickListener(new View.OnClickListener() {
+            // THIS RUNS THIRD!
             @Override
-            public void onClick(View view) {
-                mAuth.signOut();
-                finish();
+            public void onInit(int i) {
+                if (i == TextToSpeech.SUCCESS) {
+
+                    textToSpeech.setLanguage(Locale.ENGLISH);
+
+                    // NEW LOCATION
+                    textToSpeech.speak("You are on Main Flow.", TextToSpeech.QUEUE_FLUSH, null, null);
+
+
+                }
+
             }
         });
+
+
+//        btnlogout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                mAuth.signOut();
+//                finish();
+//            }
+//        });
 
 //        TestButton.setOnClickListener(v -> startActivity(new Intent(Main_flow.this, speechToText.class)));
         UPbutton.setOnClickListener(v->{nextPost();});
@@ -253,12 +275,16 @@ public class Main_flow extends AppCompatActivity{
     private void wordProcessing(String s){
         System.out.println(s);
         ArrayList<String> listS = new ArrayList<String>(Arrays.asList(s.split(" ")));
-        if(AlgorithmsLibrary.stringInArray(listS,"search")){
-            System.out.println("joke on liad");
+        if(AlgorithmsLibrary.stringInArray(listS,"search") || AlgorithmsLibrary.stringInArray(listS,"חפש")){
+
             startActivity(new Intent(Main_flow.this, SearchPosts.class));
         }
         else if(AlgorithmsLibrary.stringInArray(listS,"record")){
             startActivity(new Intent(Main_flow.this, newRecordActivity.class));
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"log out")){
+            mAuth.signOut();
+            finish();
         }
         else if(AlgorithmsLibrary.stringInArray(listS,"help")){
             System.out.println("help sound...");

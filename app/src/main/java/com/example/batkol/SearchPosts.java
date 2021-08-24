@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,6 +58,7 @@ public class SearchPosts extends AppCompatActivity {
     FirebaseAuth mAuth;
     Button search,TestButton;
     EditText searchTags;
+    TextToSpeech textToSpeech;
     private RecyclerView recyclerView;
     private ArrayList<RecordCard> cards;
     private ArrayList<RecordCard> cards_visible;
@@ -72,6 +74,7 @@ public class SearchPosts extends AppCompatActivity {
         {
             checkPermission();
         }
+        getSupportActionBar().hide();
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
         final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -87,6 +90,29 @@ public class SearchPosts extends AppCompatActivity {
         TestButton = findViewById(R.id.test);
         searchTags = findViewById(R.id.editTextsearch);
         recyclerView = findViewById(R.id.recyclerView2);
+
+        // speak to the user that is on search activity
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+
+            // THIS RUNS THIRD!
+            @Override
+            public void onInit(int i) {
+                if (i == TextToSpeech.SUCCESS) {
+
+                    textToSpeech.setLanguage(Locale.ENGLISH);
+
+                    // NEW LOCATION
+                    textToSpeech.speak("You are on Search.", TextToSpeech.QUEUE_FLUSH, null, null);
+
+
+                }
+
+            }
+        });
+
+
+
+
         TestButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

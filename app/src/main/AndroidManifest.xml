@@ -21,7 +21,8 @@
             android:theme="@style/Theme.BatKol.NoActionBar">
         </activity>
         <activity android:name=".soundpoolTest" />
-        <activity android:name=".SearchPosts" />
+        <activity android:name=".SearchPosts"
+            android:screenOrientation="portrait" />
         <activity android:name=".TestElastic" />
 
         <activity android:name=".BatKolHomeActivity" />
@@ -29,7 +30,8 @@
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
         -->
-        <activity android:name=".Main_flow" />
+        <activity android:name=".Main_flow"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".RegisterActivity"
@@ -68,7 +70,11 @@
     </application>
     <queries>
         <intent>
+
             <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
         </intent>
     </queries>
     <uses-permission android:name="android.permission.INTERNET" />
