@@ -4,27 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@drawable/border2"
     tools:context=".newRecordActivity">
-
-    <TextView
-        android:id="@+id/recordLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="335dp"
-        android:text="Tap to record"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recordBtn"
-        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/recordBtn"
-        android:layout_width="303dp"
-        android:layout_height="56dp"
+
         android:text="Tap to record"
+        app:backgroundTint="@null"
+        android:topLeftRadius="10px"
+        android:topRightRadius="10px"
+        android:layout_width="128dp"
+        android:layout_height="60dp"
+        android:background="@drawable/border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,51 +25,79 @@
 
     <Button
         android:id="@+id/button_play"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+
+        android:layout_width="128dp"
+
+        android:layout_height="60dp"
+        android:background="@drawable/border"
         android:text="play/stop"
+        android:topLeftRadius="10px"
+        android:topRightRadius="10px"
+        app:backgroundTint="@null"
+
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/recordLabel"
+        app:layout_constraintEnd_toStartOf="@+id/button_upload"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/recordLabel"
-        app:layout_constraintTop_toBottomOf="@+id/recordLabel"
-        app:layout_constraintVertical_bias="0.29" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.262" />
 
     <Button
         android:id="@+id/button_upload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+        android:layout_width="128dp"
+        android:layout_height="60dp"
+        android:background="@drawable/border"
         android:text="upload"
+        android:topLeftRadius="10px"
+        android:topRightRadius="10px"
+
+        app:backgroundTint="@null"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/button_play"
-        app:layout_constraintHorizontal_bias="0.583"
-        app:layout_constraintStart_toStartOf="@+id/button_play"
-        app:layout_constraintTop_toBottomOf="@+id/button_play"
-        app:layout_constraintVertical_bias="0.206" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.259" />
 
     <Button
         android:id="@+id/button_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="delete"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/button_upload"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="@+id/button_upload"
-        app:layout_constraintTop_toBottomOf="@+id/button_upload"
-        app:layout_constraintVertical_bias="0.276" />
 
-    <EditText
-        android:id="@+id/edix_filename"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Audio1"
-        app:layout_constraintBottom_toTopOf="@+id/recordBtn"
+        android:layout_width="195dp"
+
+        android:layout_height="43dp"
+        android:background="@drawable/border"
+        android:text="delete"
+        android:topLeftRadius="10px"
+        android:topRightRadius="10px"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/speechhelper"
+        app:layout_constraintEnd_toStartOf="@+id/button_upload"
+        app:layout_constraintHorizontal_bias="0.468"
+        app:layout_constraintStart_toEndOf="@+id/button_play"
+        app:layout_constraintTop_toBottomOf="@+id/freqSpinner"
+        app:layout_constraintVertical_bias="0.317" />
+
+    <Button
+        android:id="@+id/speechhelper"
+        android:layout_width="371dp"
+        android:layout_height="345dp"
+        android:background="@drawable/border"
+
+        android:text="Speak"
+        android:textSize="36dp"
+        android:textStyle="bold"
+        android:topLeftRadius="10px"
+        android:topRightRadius="10px"
+
+        app:backgroundTint="@null"
+
+        app:layout_constraintBottom_toBottomOf="@+id/description_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.92" />
 
     <EditText
         android:id="@+id/description_text"
@@ -88,30 +108,42 @@
         android:inputType="textMultiLine"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/edix_filename"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="text"
+        android:text="        Give it a Name"
+        app:layout_constraintBottom_toTopOf="@+id/recordBtn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_delete" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
         android:id="@+id/freqSpinner"
+        android:layout_width="102dp"
+        android:layout_height="53dp"
         android:background="@drawable/border"
-        android:layout_width="119dp"
-        android:layout_height="52dp"
         android:backgroundTint="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/button_play"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/speechhelper"
+        app:layout_constraintEnd_toStartOf="@+id/button_upload"
+        app:layout_constraintHorizontal_bias="0.895"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recordLabel"
-        app:layout_constraintVertical_bias="0.637" />
+        app:layout_constraintTop_toTopOf="@+id/recordBtn"
+        app:layout_constraintVertical_bias="0.426" />
 
-    <Button
-        android:id="@+id/speechhelper"
+    <TextView
+        android:id="@+id/recordLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="hold to talk"
-        app:layout_constraintBottom_toBottomOf="@+id/button_play"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="11dp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/speechhelper"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.709"
-        app:layout_constraintStart_toEndOf="@+id/button_play"
-        app:layout_constraintTop_toTopOf="@+id/button_play"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_delete" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -279,7 +279,7 @@ public class Main_flow extends AppCompatActivity{
 
             startActivity(new Intent(Main_flow.this, SearchPosts.class));
         }
-        else if(AlgorithmsLibrary.stringInArray(listS,"record")){
+        else if(AlgorithmsLibrary.stringInArray(listS,"record") || AlgorithmsLibrary.stringInArray(listS,"רקורד")){
             startActivity(new Intent(Main_flow.this, newRecordActivity.class));
         }
         else if(AlgorithmsLibrary.stringInArray(listS,"log out")){
