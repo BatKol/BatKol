@@ -20,10 +20,10 @@ A sound-based social network that is also accessible using only your VOICE !
 ![image](https://user-images.githubusercontent.com/31191253/130861809-30cbcb6a-ff9b-42e8-a5ef-7a2f093782fc.png)
 
 
-#### Minimal UI Images
-![WhatsApp Image 2021-08-25 at 23 09 22](https://user-images.githubusercontent.com/31191253/130861868-5074c661-2320-49bc-b3a0-e20c2e435780.jpeg)
-![WhatsApp Image 2021-08-25 at 23 07 37](https://user-images.githubusercontent.com/31191253/130861877-c3856970-7390-4b68-a6e7-3dff8e92bfca.jpeg)
-![WhatsApp Image 2021-08-25 at 23 07 38](https://user-images.githubusercontent.com/31191253/130861881-9f250456-8a51-4e1e-875d-918629adaf2b.jpeg)
+#### Few App Images
+![Webp net-resizeimage(2)](https://user-images.githubusercontent.com/31191253/130862283-1e513795-c141-4fee-a42e-b8bce84d6cb0.jpg)
+![Webp net-resizeimage](https://user-images.githubusercontent.com/31191253/130862288-10153905-3554-492a-b81e-7c249967a812.jpg)
+![Webp net-resizeimage(1)](https://user-images.githubusercontent.com/31191253/130862289-c88cd356-e959-4c11-a504-62eedb53fb40.jpg)
 
 
 
