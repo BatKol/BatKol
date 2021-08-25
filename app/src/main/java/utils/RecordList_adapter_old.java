@@ -29,14 +29,25 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
     private Context currentActivity;
     private List<RecordCard> data;
     private static ViewHolder currentView;
+    private String page;
     //private static PlaybackParams params = new PlaybackParams();
 
+
+    public RecordList_adapter_old(Context context, List<RecordCard> data,String page)
+    {
+        this.layoutInflater = LayoutInflater.from(context);
+        this.currentActivity = context;
+        this.data = data;
+        this.page=page;
+    }
 
     public RecordList_adapter_old(Context context, List<RecordCard> data)
     {
         this.layoutInflater = LayoutInflater.from(context);
         this.currentActivity = context;
         this.data = data;
+        this.page=null;
+
     }
 
     @NonNull
@@ -66,7 +77,9 @@ public class RecordList_adapter_old extends RecyclerView.Adapter<RecordList_adap
 
         currentView = viewHolder;
 
-        viewHolder.getBtn_play().performClick();
+
+        if(this.page==null)
+            viewHolder.getBtn_play().performClick();
     }
 
     @Override

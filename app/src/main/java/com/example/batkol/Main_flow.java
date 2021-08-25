@@ -11,10 +11,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
@@ -22,10 +20,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,17 +32,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Timer;
 
 import models.RecordCard;
 import utils.AlgorithmsLibrary;
-import utils.RecordList_adapter;
 import utils.RecordList_adapter_old;
 
 public class Main_flow extends AppCompatActivity{
@@ -86,7 +76,7 @@ public class Main_flow extends AppCompatActivity{
 //        newRecordBT = findViewById(R.id.record_btn);
 //        profileBT = findViewById(R.id.myprofile_btn);
         UPbutton = findViewById(R.id.UPbutton);
-        TestButton=findViewById(R.id.TESTbutton);
+        TestButton=findViewById(R.id.buttonSpeak);
 //        btnlogout=findViewById(R.id.logout);
 
         mAuth = FirebaseAuth.getInstance();
@@ -239,7 +229,10 @@ public class Main_flow extends AppCompatActivity{
                                 posts.add(document.toObject(AudioPosts.class));
                             }
                             addNewCard();
+
                             nextPost();
+
+
                         } else {
                             Log.d("posts", "Error getting documents: ", task.getException());
                         }
@@ -268,6 +261,8 @@ public class Main_flow extends AppCompatActivity{
         }
 
         cardsAdapter.notifyDataSetChanged();
+
+
 
     }
 
@@ -302,6 +297,14 @@ public class Main_flow extends AppCompatActivity{
             startActivity(new Intent(Main_flow.this, newRecordActivity.class));
         }
         else if(AlgorithmsLibrary.stringInArray(listS,"log out")){
+            mAuth.signOut();
+            finish();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"bay")){
+            mAuth.signOut();
+            finish();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"לוגאוט")){
             mAuth.signOut();
             finish();
         }

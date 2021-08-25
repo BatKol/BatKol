@@ -8,6 +8,24 @@
     android:fitsSystemWindows="true"
     tools:context=".ProfileActivity">
 
+
+    <Button
+        android:id="@+id/buttonSpeak"
+        android:layout_width="match_parent"
+        android:layout_height="212dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="4dp"
+        android:layout_weight="1"
+        android:background="#536DFE"
+        android:bottomLeftRadius="20dp"
+        android:bottomRightRadius="20dp"
+        android:text="Speak"
+        android:textColor="@android:color/black"
+        android:textSize="36sp"
+        android:topLeftRadius="20dp"
+        android:topRightRadius="20dp"
+        app:backgroundTint="@null" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
@@ -33,8 +51,17 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
+
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_scrolling" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_scrolling"
+
+        android:layout_width="match_parent"
+        android:layout_height="557dp"
+        app:layout_anchor="@+id/buttonSpeak"
+        app:layout_anchorGravity="center" />
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

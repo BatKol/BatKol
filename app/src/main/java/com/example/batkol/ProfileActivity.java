@@ -1,5 +1,6 @@
 package com.example.batkol;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorSpace;
 import android.graphics.Paint;
@@ -25,22 +26,28 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 import models.RecordCard;
+import utils.AlgorithmsLibrary;
 import utils.RecordList_adapter;
 import utils.RecordList_adapter_old;
 
@@ -48,11 +55,13 @@ public class ProfileActivity extends AppCompatActivity {
     private AppBarLayout appBar;
     private TextView profileName;
     private  TextView fansNumbers;
+    Button button;
     FirebaseUser user;
     FirebaseFirestore db;
     FirebaseAuth mAuth;
     TextToSpeech textToSpeech;
     String id;
+    SpeechRecognizer speechRecognizer;
     RecyclerView profile_posts;
     private ArrayList<RecordCard> cards = new ArrayList<RecordCard>();
 
@@ -68,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
         appBar = findViewById(R.id.app_bar);
         profileName= findViewById(R.id.profile_name);
         fansNumbers =findViewById(R.id.fans_number);
+        button=findViewById(R.id.buttonSpeak);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         user = mAuth.getCurrentUser();
@@ -76,8 +86,24 @@ public class ProfileActivity extends AppCompatActivity {
         posts.clear();
 
 
-
-
+        SpeechRecognizer speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        speechRecognizer.setRecognitionListener(new BatKolRconizer(this::wordProcessing));
+        button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    speechRecognizer.stopListening();
+                }
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+//                    TestButton.setImageResource(R.drawable.ic_mic_black_24dp);
+                    speechRecognizer.startListening(speechRecognizerIntent);
+                }
+                return false;
+            }
+        });
 
 
 
@@ -154,7 +180,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void initRecyclerAdapter() {
         profile_posts.setLayoutManager(new LinearLayoutManager(this));
-        cardsAdapter = new RecordList_adapter_old(this,cards);
+        cardsAdapter = new RecordList_adapter_old(this,cards,"profile");
         profile_posts.setAdapter(cardsAdapter);
 
     }
@@ -206,6 +232,42 @@ public class ProfileActivity extends AppCompatActivity {
                 });
 
 
+
+
+    }
+
+    private void wordProcessing(String s){
+        System.out.println(s);
+        ArrayList<String> listS = new ArrayList<String>(Arrays.asList(s.split(" ")));
+        if(AlgorithmsLibrary.stringInArray(listS,"search") || AlgorithmsLibrary.stringInArray(listS,"חפש")){
+
+            startActivity(new Intent(ProfileActivity.this, SearchPosts.class));
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"record") || AlgorithmsLibrary.stringInArray(listS,"רקורד")){
+            startActivity(new Intent(ProfileActivity.this, newRecordActivity.class));
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"log out")){
+            mAuth.signOut();
+            finish();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"bay")){
+            mAuth.signOut();
+            finish();
+        }
+        else if(AlgorithmsLibrary.stringInArray(listS,"לוגאוט")){
+            mAuth.signOut();
+            finish();
+        }
+
+        else if(AlgorithmsLibrary.stringInArray(listS,"home")){
+            startActivity(new Intent(ProfileActivity.this, Main_flow.class));
+        }
+
+        else if(AlgorithmsLibrary.stringInArray(listS,"profile") || AlgorithmsLibrary.stringInArray(listS,"פרופיל")){
+            startActivity(new Intent(ProfileActivity.this, ProfileActivity.class));
+        }
+        else
+            System.out.println("nothing found");
 
 
     }
