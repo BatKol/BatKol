@@ -28,3 +28,5 @@ A sound-based social network that is also accessible using only your VOICE !
 
 
 ### Download Here
+
+[Dwonload](https://github.com/BatKol/androidApp/blob/main/app-release.apk) <- Click Here
